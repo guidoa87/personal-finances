@@ -75,6 +75,11 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
   .timelineTarget{font-size:10px}
   .timelineCurrent{font-size:11px}
 }
+
+.bottomNav{display:flex;justify-content:space-around;align-items:center;padding:10px 8px calc(10px + env(safe-area-inset-bottom));border-top:1px solid #edf0f4;background:#fff}
+.navItem{appearance:none;border:0;background:none;color:#9aa8b7;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:64px;min-height:48px;font:inherit;font-size:11px;cursor:pointer}
+.navItem.active{color:#2f80ed}
+.navIcon{font-size:20px;line-height:1}
 </style>
 
 <link rel="icon" type="image/png" sizes="180x180" href="./icons/icon-180.png">
@@ -577,5 +582,41 @@ navs.forEach(btn=>btn.addEventListener('click',async()=>{
 }));
 startOverviewRefresh();
 </script>
+
+<nav class="bottomNav" aria-label="Primary navigation">
+  <button type="button" class="navItem active" data-view="overview" id="nav-overview">
+    <span class="navIcon">⌂</span><span>Overview</span>
+  </button>
+  <button type="button" class="navItem" data-view="timeline" id="nav-timeline">
+    <span class="navIcon">↗</span><span>Timeline</span>
+  </button>
+  <button type="button" class="navItem" data-view="assets" id="nav-assets">
+    <span class="navIcon">◫</span><span>Assets</span>
+  </button>
+  <button type="button" class="navItem" data-view="settings" id="nav-settings">
+    <span class="navIcon">⚙</span><span>Settings</span>
+  </button>
+</nav>
+
+
+(function(){
+  const navItems=document.querySelectorAll('.navItem[data-view]');
+  navItems.forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const view=btn.dataset.view;
+      navItems.forEach(b=>b.classList.toggle('active',b===btn));
+      if(typeof showView==='function'){
+        showView(view);
+      }else if(typeof renderView==='function'){
+        renderView(view);
+      }else{
+        document.querySelectorAll('[data-view-panel]').forEach(panel=>{
+          panel.hidden=panel.dataset.viewPanel!==view;
+        });
+      }
+    });
+  });
+})();
+
 </body>
 </html>
