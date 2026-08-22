@@ -314,7 +314,7 @@ function findColumn(headers, patterns){
 }
 
 async function getMainSheetData(){
-  const url = SHEET_API + '?gid=0';
+  const url = SHEET_API + '?gid=0&_=' + Date.now();
   const res = await fetch(url,{cache:'no-store'});
   if(!res.ok) throw new Error('Google Sheets endpoint unavailable');
   const payload=await res.json();
@@ -458,7 +458,15 @@ function startOverviewRefresh(){
   });
   run();
   clearInterval(window.__overviewRefresh);
-  window.__overviewRefresh=setInterval(run,60000);
+  window.__overviewRefresh=setInterval(run,15000);
+  window.removeEventListener('focus', window.__sheetRefresh);
+  window.removeEventListener('pageshow', window.__sheetRefresh);
+  window.removeEventListener('visibilitychange', window.__sheetVisibilityRefresh);
+  window.__sheetRefresh=()=>run();
+  window.__sheetVisibilityRefresh=()=>{if(document.visibilityState==='visible') run();};
+  window.addEventListener('focus', window.__sheetRefresh);
+  window.addEventListener('pageshow', window.__sheetRefresh);
+  document.addEventListener('visibilitychange', window.__sheetVisibilityRefresh);
 }
 
 async function getTimelineData(){
