@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="en">
 <head>
-<base href="/personal-finances/">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#f7f9fc">
@@ -53,34 +52,29 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
 .nav .nicon{width:34px;height:34px;margin:0 auto 3px;display:grid;place-items:center;font-size:24px;line-height:1;color:#778294;background:transparent}
 .nav.active .nicon{color:#2f80ed}
 @media(min-width:700px){.app{max-width:920px}.cards{grid-template-columns:repeat(4,1fr)}.sectionGrid{grid-template-columns:1fr 1fr}.water{height:210px}.heroValue{font-size:64px}.bottom{max-width:920px}}
+</style>
 
 
-
-
-
-
-/* Timeline responsive chart */
-.timelineChart{width:100%;overflow:hidden}
-.timelineChart svg{display:block;width:100%;height:auto;overflow:visible}
-.timelineChart text{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;font-stretch:normal;letter-spacing:0}
-.timelineYear{font-size:11px;font-weight:700;fill:#6f849c}
-.timelineAxis{font-size:11px;fill:#9aa9ba}
-.timelineTarget{font-size:11px;font-weight:600;fill:#8aaed1}
-.timelineCurrent{font-size:12px;font-weight:700;fill:#2f80ed}
-@media(max-width:600px){
-  .timelineChart{margin:0;width:100%}
-  .timelineChart svg{width:100%;height:auto;min-height:220px}
-  .timelineYear{font-size:10px}
-  .timelineAxis{font-size:10px}
-  .timelineTarget{font-size:10px}
-  .timelineCurrent{font-size:11px}
+/* Timeline mobile typography */
+@media (max-width: 600px) {
+  .section svg text {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    font-stretch: normal;
+    letter-spacing: 0;
+  }
+  .section svg {
+    max-width: 100%;
+    overflow: visible;
+  }
+  .section .value,
+  .section .label,
+  .section .smallDelta {
+    font-stretch: normal;
+    letter-spacing: 0;
+    line-height: 1.25;
+  }
 }
 
-.bottomNav{display:flex;justify-content:space-around;align-items:center;padding:10px 8px calc(10px + env(safe-area-inset-bottom));border-top:1px solid #edf0f4;background:#fff}
-.navItem{appearance:none;border:0;background:none;color:#9aa8b7;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:64px;min-height:48px;font:inherit;font-size:11px;cursor:pointer}
-.navItem.active{color:#2f80ed}
-.navIcon{font-size:20px;line-height:1}
-</style>
 
 <link rel="icon" type="image/png" sizes="180x180" href="./icons/icon-180.png">
 <link rel="apple-touch-icon" href="./icons/icon-180.png">
@@ -97,7 +91,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
     <div class="heroValue" id="liquidNW">$362,009</div>
     <div class="delta">↑ 2.45% <span>vs last month</span></div>
     <div class="water">
-      <svg viewBox="0 0 1200 220" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <svg viewBox="0 0 1200 220" preserveAspectRatio="none" aria-hidden="true">
         <defs>
           <linearGradient id="waterFill" x1="0" x2="0" y1="0" y2="1">
             <stop offset="0" stop-color="#dff0ff"/><stop offset="1" stop-color="#f7fbff"/>
@@ -296,7 +290,6 @@ async function refreshOverview(){
   const realEstate=getByLabel(accountLabels,accountValues,'Real Estate');
 
   const investments=total-realEstate-equity;
-  window.__overviewData={liquid,accessible,total,dollar,bitcoin,cash,wise,ibkr,nexo,bingx,equity,realEstate,investments};
   const set=(id,n)=>{const el=document.getElementById(id); if(el && isFinite(n)) el.textContent=money(n)};
 
   set('liquidNW',liquid);
@@ -325,8 +318,6 @@ async function refreshOverview(){
   updateAccountBars();
   updateWaterLevel(liquid,total);
 
-  const status=document.getElementById('dataStatus');
-  if(status) status.textContent=' · Live';
   const ratio=(isFinite(liquid)&&isFinite(total)&&total>0)?(liquid/total*100):NaN;
   const caption=document.querySelector('.waterCaption');
   if(caption && isFinite(ratio)) caption.textContent=`${ratio.toFixed(0)}% LIQUID`;
@@ -387,154 +378,111 @@ function startOverviewRefresh(){
 }
 
 async function getTimelineData(){
-  const url = SHEET_API + '?gid=' + TIMELINE_GID;
-  const res = await fetch(url + '&_=' + Date.now(), {cache:'no-store'});
+  const url = SHEET_API + '?sheet=' + encodeURIComponent(TIMELINE_SHEET_NAME) + '&gid=' + TIMELINE_GID;
+  const res=await fetch(url,{cache:'no-store'});
   if(!res.ok) throw new Error('Google Apps Script unavailable');
+  const payload=await res.json();
 
-  let raw = await res.text();
-  let payload;
-  try {
-    payload = JSON.parse(raw);
-  } catch(e) {
-    throw new Error('Invalid JSON from Google Apps Script');
-  }
-
-  const rows = Array.isArray(payload) ? payload :
+  const rows=Array.isArray(payload) ? payload :
     (Array.isArray(payload.data) ? payload.data :
     (Array.isArray(payload.values) ? payload.values :
     (Array.isArray(payload.rows) ? payload.rows : null)));
 
-  if(!Array.isArray(rows)) throw new Error('Unexpected Apps Script response');
+  if(!rows || !rows.length) throw new Error('Empty Race to 500k response');
 
-  const points = [];
+  // Exact structure returned by Race to 500k:
+  // row 0: title
+  // row 2: 12 monthly dates
+  // row 3: 12 monthly net worth values
+  // row 4: blank
+  // row 5: next year's dates
+  // row 6: next year's values, etc.
+  const points=[];
 
-  // Actual Race to 500k structure:
-  // blank/title row
-  // blank row
-  // 12 dates
-  // 12 values
-  // blank row
-  // 12 dates
-  // 12 values
-  // etc.
-  for(let i=0;i<rows.length;i++){
-    const dateRow=Array.isArray(rows[i]) ? rows[i] : [];
-    const dates=dateRow.map(dateValue);
-    const validDates=dates.filter(d=>d instanceof Date && !Number.isNaN(d.getTime()));
+  for(let i=0;i<rows.length-1;i++){
+    const dates=rows[i], values=rows[i+1];
+    if(!Array.isArray(dates) || !Array.isArray(values)) continue;
 
-    if(validDates.length < 2) continue;
+    const parsedDates=dates.map(dateValue);
+    const usable=parsedDates.filter(d=>d && d.getFullYear()>=2000 && d.getFullYear()<=2100).length;
+    const numbers=values.map(num);
+    const usableValues=numbers.filter(v=>isFinite(v) && v>0).length;
 
-    // Find the next non-empty row after the date row.
-    let k=i+1;
-    while(k<rows.length && Array.isArray(rows[k]) && rows[k].every(v=>v==="" || v==null)) k++;
-    if(k>=rows.length) continue;
-
-    const valueRow=Array.isArray(rows[k]) ? rows[k] : [];
-    const values=valueRow.map(num);
-
-    let added=0;
-    const n=Math.min(dates.length,values.length);
-
-    for(let j=0;j<n;j++){
-      const d=dates[j], v=values[j];
-      if(d instanceof Date &&
-         !Number.isNaN(d.getTime()) &&
-         d.getFullYear()>=2000 &&
-         d.getFullYear()<=2100 &&
-         Number.isFinite(v) &&
-         v>0){
-        points.push({date:d,total:v});
-        added++;
+    if(usable>=6 && usableValues>=6){
+      for(let j=0;j<Math.min(parsedDates.length,numbers.length);j++){
+        const d=parsedDates[j], v=numbers[j];
+        if(d && d.getFullYear()>=2000 && d.getFullYear()<=2100 && isFinite(v) && v>0){
+          points.push({date:d,total:v});
+        }
       }
+      i++;
     }
-
-    if(added>0) i=k;
   }
 
   const unique=new Map();
-  points.forEach(point=>{
-    const key=point.date.toISOString().slice(0,7);
-    unique.set(key,point);
-  });
-
+  points.forEach(p=>unique.set(p.date.toISOString().slice(0,10),p));
   const data=[...unique.values()].sort((a,b)=>a.date-b.date);
 
-  if(data.length<2){
-    throw new Error('Could not parse Race to 500k history');
-  }
-
+  if(data.length<2) throw new Error('Could not parse Race to 500k history');
   return data;
 }
 
 function timelineSVG(data){
-  const W=900,H=360,pad={l:52,r:22,t:36,b:58};
+  const W=900,H=330,pad={l:18,r:18,t:28,b:48};
   const vals=data.map(d=>d.total);
-  const max=Math.max(500000,...vals);
-  const plotW=W-pad.l-pad.r;
-  const plotH=H-pad.t-pad.b;
-
+  const min=0, max=Math.max(500000,...vals), range=max||1;
   const pts=data.map((d,i)=>({
-    x:pad.l+(data.length===1?plotW/2:i*plotW/(data.length-1)),
-    y:pad.t+(1-d.total/max)*plotH
+    x:pad.l+i*(W-pad.l-pad.r)/(data.length-1),
+    y:pad.t+(1-d.total/range)*(H-pad.t-pad.b)
   }));
 
-  let line=`M ${pts[0].x} ${pts[0].y}`;
-  for(let i=1;i<pts.length;i++){
-    const a=pts[i-1],b=pts[i],cx=(a.x+b.x)/2;
-    line+=` C ${cx} ${a.y}, ${cx} ${b.y}, ${b.x} ${b.y}`;
+  const smooth=[];
+  for(let i=0;i<pts.length;i++){
+    if(i===0) smooth.push(`M ${pts[i].x.toFixed(1)} ${pts[i].y.toFixed(1)}`);
+    else{
+      const p=pts[i-1], q=pts[i], cx=(p.x+q.x)/2;
+      smooth.push(`C ${cx.toFixed(1)} ${p.y.toFixed(1)}, ${cx.toFixed(1)} ${q.y.toFixed(1)}, ${q.x.toFixed(1)} ${q.y.toFixed(1)}`);
+    }
   }
-
-  const area=line+` L ${pts.at(-1).x} ${H-pad.b} L ${pts[0].x} ${H-pad.b} Z`;
-  const targetY=pad.t+(1-500000/max)*plotH;
-
-  const yearLast={};
-  data.forEach((d,i)=>{yearLast[d.date.getFullYear()]=i});
-  const years=Object.keys(yearLast).map(Number).sort((a,b)=>a-b);
-
-  const milestones=years.map(year=>{
-    const i=yearLast[year];
-    const p=pts[i];
-    const y=Math.max(p.y-24,pad.t+12);
-    return `
-      <line x1="${p.x}" y1="${p.y-5}" x2="${p.x}" y2="${y+7}" stroke="#b9d4ef" stroke-width="1.5"/>
-      <circle cx="${p.x}" cy="${p.y}" r="4" fill="#2f80ed"/>
-      <text class="timelineYear" x="${p.x}" y="${y}" text-anchor="middle">${year}</text>`;
-  }).join('');
-
-  const yTicks=[0,100000,200000,300000,400000,500000].filter(v=>v<=max);
-  const ticks=yTicks.map(v=>{
-    const y=pad.t+(1-v/max)*plotH;
-    return `<text class="timelineAxis" x="${pad.l-9}" y="${y+4}" text-anchor="end">$${Math.round(v/1000)}K</text>`;
-  }).join('');
+  const line=smooth.join(' ');
+  const area=line+` L ${pts.at(-1).x.toFixed(1)} ${H-pad.b} L ${pts[0].x.toFixed(1)} ${H-pad.b} Z`;
 
   const last=pts.at(-1);
-  const lastValue=vals.at(-1);
-  const lastLabelY=Math.max(last.y-38,pad.t+10);
+  const targetY=pad.t+(1-500000/range)*(H-pad.t-pad.b);
+  const maxIndex=vals.indexOf(Math.max(...vals));
+  const high=vals[maxIndex];
+
+  const markers=pts.map((p,i)=>{
+    if(i===pts.length-1 || i===maxIndex || i%12===0)
+      return `<circle cx="${p.x}" cy="${p.y}" r="${i===pts.length-1?6:3.5}" fill="#fff" stroke="#2f80ed" stroke-width="${i===pts.length-1?3:2}"/>`;
+    return '';
+  }).join('');
+
+  const start=data[0].date.toLocaleDateString('en-US',{month:'short',year:'numeric'});
+  const end=data.at(-1).date.toLocaleDateString('en-US',{month:'short',year:'numeric'});
 
   return {
-    current:money(lastValue),
-    high:Math.max(...vals),
-    points:data.length,
-    svg:`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Net worth progression">
+    svg:`<svg viewBox="0 0 ${W} ${H}" width="100%" height="330" preserveAspectRatio="none">
       <defs>
-        <linearGradient id="timelineArea" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#2f80ed" stop-opacity=".20"/>
-          <stop offset="100%" stop-color="#2f80ed" stop-opacity="0"/>
+        <linearGradient id="area" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0" stop-color="#2f80ed" stop-opacity=".22"/>
+          <stop offset="1" stop-color="#2f80ed" stop-opacity="0"/>
         </linearGradient>
       </defs>
-      <line x1="${pad.l}" y1="${targetY}" x2="${W-pad.r}" y2="${targetY}" stroke="#c5dcef" stroke-width="1.5" stroke-dasharray="5 6"/>
-      <text class="timelineTarget" x="${W-pad.r}" y="${targetY-8}" text-anchor="end">$500K</text>
-      ${ticks}
-      <path d="${area}" fill="url(#timelineArea)"/>
+      <line x1="${pad.l}" y1="${targetY}" x2="${W-pad.r}" y2="${targetY}" stroke="#bcdaf7" stroke-dasharray="5 6"/>
+      <text x="${W-pad.r}" y="${targetY-8}" text-anchor="end" font-size="10" fill="#7daee0">$500K TARGET</text>
+      <line x1="${pad.l}" y1="${H-pad.b}" x2="${W-pad.r}" y2="${H-pad.b}" stroke="#edf0f4"/>
+      <path d="${area}" fill="url(#area)"/>
       <path d="${line}" fill="none" stroke="#2f80ed" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-      ${milestones}
-      <circle cx="${last.x}" cy="${last.y}" r="6" fill="#fff" stroke="#2f80ed" stroke-width="3"/>
-      <text class="timelineCurrent" x="${last.x}" y="${lastLabelY}" text-anchor="middle">${money(lastValue)}</text>
-      <line x1="${pad.l}" y1="${H-pad.b}" x2="${W-pad.r}" y2="${H-pad.b}" stroke="#edf1f5"/>
-    </svg>`
+      ${markers}
+      <line x1="${last.x}" y1="${pad.t}" x2="${last.x}" y2="${H-pad.b}" stroke="#c8e0f8" stroke-dasharray="4 5"/>
+      <text x="${last.x-8}" y="${last.y-12}" text-anchor="end" font-size="11" font-weight="700" fill="#2f80ed">${money(vals.at(-1))}</text>
+      <text x="${pad.l}" y="${H-14}" font-size="10" fill="#9aa4b3">${start}</text>
+      <text x="${W-pad.r}" y="${H-14}" text-anchor="end" font-size="10" fill="#9aa4b3">${end}</text>
+    </svg>`,
+    start,end,high,current:money(vals.at(-1)), points:data.length
   };
 }
-
 
 async function renderTimeline(){
   app.innerHTML=`<div style="padding-top:24px">
@@ -550,15 +498,23 @@ async function renderTimeline(){
       <div id="chartWrap" style="min-height:330px;display:grid;place-items:center;color:#9aa4b3;font-size:12px">Loading your history…</div>
       <div id="chartMeta" style="display:flex;justify-content:space-between;font-size:10px;color:#9aa4b3;padding:0 6px"></div>
     </div>
+    <div class="cards" style="margin-top:10px">
+      <div class="card"><div class="label">Current</div><div class="value" id="tCurrent">—</div></div>
+      <div class="card"><div class="label">All Time High</div><div class="value" id="tHigh">—</div></div>
+      <div class="card"><div class="label">Months</div><div class="value" id="tMonths">—</div></div>
+      <div class="card"><div class="label">To $500K</div><div class="value" id="tTarget">—</div></div>
+    </div>
   </div>`;
 
   try{
     const data=await getTimelineData();
     const c=timelineSVG(data);
     document.getElementById('chartWrap').innerHTML=c.svg;
-    const first=data[0].date;
-    const last=data[data.length-1].date;
-    document.getElementById('chartMeta').innerHTML=`<span>${first.toLocaleDateString('en-US',{month:'short',year:'numeric'})}</span><span>Race to $500K</span><span>${last.toLocaleDateString('en-US',{month:'short',year:'numeric'})}</span>`;
+    document.getElementById('chartMeta').innerHTML=`<span>${c.start}</span><span>Race to $500K</span><span>${c.end}</span>`;
+    document.getElementById('tCurrent').textContent=c.current;
+    document.getElementById('tHigh').textContent=money(c.high);
+    document.getElementById('tMonths').textContent=c.points;
+    document.getElementById('tTarget').textContent=money(Math.max(0,500000-Number(c.current.replace(/[$,]/g,''))));
     document.getElementById('timelineSub').textContent=`${c.points} monthly observations`;
   }catch(e){
     document.getElementById('chartWrap').innerHTML='<div style="text-align:center;padding:40px 20px"><b>Could not load Race to 500k</b><div class="sub" style="margin-top:8px">The Sheet endpoint is reachable, but its response could not be parsed.</div></div>';
@@ -568,51 +524,20 @@ async function renderTimeline(){
 }
 
 function renderAssets(){
-  const d=window.__overviewData||{};
-  const moneyOrDash=n=>Number.isFinite(n)?money(n):'—';
-  const liquid=Number.isFinite(d.liquid)?d.liquid:0;
-  const accounts=[
-    ['IBKR',d.ibkr],['Wise',d.wise],['Nexo',d.nexo],['BingX',d.bingx],['Cash',d.cash]
-  ];
-  const totalAccounts=accounts.reduce((s,x)=>s+(Number.isFinite(x[1])?x[1]:0),0);
-
-  app.innerHTML=`<div style="padding-top:60px">
-    <div class="eyebrow">ASSETS</div>
-    <div class="heroValue" id="assetsTotalNW" style="font-size:40px;text-align:left">${moneyOrDash(d.total)}</div>
-    <div class="accounts" style="margin-top:28px">
-      <div class="sectionTitle">Liquid & Accessible</div>
-      ${accounts.map(([name,value])=>{
-        const pct=liquid>0 && Number.isFinite(value)?(value/liquid*100):0;
-        const bar=totalAccounts>0 && Number.isFinite(value)?(value/totalAccounts*100):0;
-        return `<div class="account">
-          <div class="row"><div class="name">${name}</div><div class="amt">${moneyOrDash(value)}</div></div>
-          <div class="sub">${Number.isFinite(value)&&liquid>0?pct.toFixed(1)+'% of liquid':''}</div>
-          <div class="bar"><i style="width:${Math.max(1,Math.min(100,bar))}%"></i></div>
-        </div>`;
-      }).join('')}
-    </div>
-    <div class="illiquid">
-      <div class="sectionTitle">Long Term / Illiquid</div>
-      <div class="row"><div class="name">Equity</div><div class="amt">${moneyOrDash(d.equity)}</div></div>
-      <div class="sub">Long term investment · not sellable</div>
-      <div class="row" style="margin-top:18px"><div class="name">Real Estate</div><div class="amt">${moneyOrDash(d.realEstate)}</div></div>
-    </div>
-  </div>`;
+  app.innerHTML='<div style="padding-top:60px"><div class="eyebrow">ASSETS</div><div class="heroValue" style="font-size:40px;text-align:left">$706,359</div><div class="accounts" style="margin-top:28px"><div class="sectionTitle">Liquid & Accessible</div><div class="account"><div class="row"><div class="name">IBKR</div><div class="amt">$339,913</div></div><div class="bar"><i style="width:83%"></i></div></div><div class="account"><div class="row"><div class="name">Wise</div><div class="amt">$9,700</div></div><div class="bar"><i style="width:8%"></i></div></div><div class="account"><div class="row"><div class="name">Nexo</div><div class="amt">$2,296</div></div><div class="bar"><i style="width:3%"></i></div></div><div class="account"><div class="row"><div class="name">BingX</div><div class="amt">$500</div></div><div class="bar"><i style="width:2%"></i></div></div><div class="account"><div class="row"><div class="name">Cash</div><div class="amt">$9,600</div></div><div class="bar"><i style="width:8%"></i></div></div></div><div class="illiquid"><div class="sectionTitle">Long Term / Illiquid</div><div class="row"><div class="name">Equity</div><div class="amt">$272,350</div></div><div class="sub">Long term investment · not sellable</div></div></div>';
 }
-
 function renderSettings(){
   app.innerHTML='<div style="padding-top:60px"><div class="eyebrow">SETTINGS</div><div class="heroValue" style="font-size:40px;text-align:left">Preferences</div><div class="section" style="margin-top:28px"><div class="sectionTitle">Dashboard</div><div class="row"><span>Currency</span><b>USD</b></div><div class="row" style="margin-top:18px"><span>Data source</span><b>Google Sheets</b></div><div class="row" style="margin-top:18px"><span>Refresh</span><b>Automatic</b></div></div></div>';
 }
 navs.forEach(btn=>btn.addEventListener('click',async()=>{
   navs.forEach(x=>x.classList.remove('active')); btn.classList.add('active');
   const v=btn.dataset.view;
-  if(v==='overview'){ app.innerHTML=overviewHTML; refreshOverview().catch(()=>{}); }
+  if(v==='overview') app.innerHTML=overviewHTML;
   if(v==='timeline') await renderTimeline();
   if(v==='assets') renderAssets();
   if(v==='settings') renderSettings();
 }));
 startOverviewRefresh();
 </script>
-
 </body>
 </html>
