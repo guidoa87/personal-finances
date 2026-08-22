@@ -296,6 +296,7 @@ async function refreshOverview(){
   const realEstate=getByLabel(accountLabels,accountValues,'Real Estate');
 
   const investments=total-realEstate-equity;
+  window.__overviewData={liquid,accessible,total,dollar,bitcoin,cash,wise,ibkr,nexo,bingx,equity,realEstate,investments};
   const set=(id,n)=>{const el=document.getElementById(id); if(el && isFinite(n)) el.textContent=money(n)};
 
   set('liquidNW',liquid);
@@ -324,6 +325,8 @@ async function refreshOverview(){
   updateAccountBars();
   updateWaterLevel(liquid,total);
 
+  const status=document.getElementById('dataStatus');
+  if(status) status.textContent=' · Live';
   const ratio=(isFinite(liquid)&&isFinite(total)&&total>0)?(liquid/total*100):NaN;
   const caption=document.querySelector('.waterCaption');
   if(caption && isFinite(ratio)) caption.textContent=`${ratio.toFixed(0)}% LIQUID`;
@@ -533,7 +536,7 @@ function timelineSVG(data){
 }
 
 
-function renderTimeline(){
+async function renderTimeline(){
   app.innerHTML=`<div style="padding-top:24px">
     <div class="eyebrow">TIMELINE</div>
     <div style="display:flex;justify-content:space-between;align-items:end;margin-top:8px">
@@ -553,11 +556,9 @@ function renderTimeline(){
     const data=await getTimelineData();
     const c=timelineSVG(data);
     document.getElementById('chartWrap').innerHTML=c.svg;
-    document.getElementById('chartMeta').innerHTML=`<span>${c.start}</span><span>Race to $500K</span><span>${c.end}</span>`;
-    document.getElementById('tCurrent').textContent=c.current;
-    document.getElementById('tHigh').textContent=money(c.high);
-    document.getElementById('tMonths').textContent=c.points;
-    document.getElementById('tTarget').textContent=money(Math.max(0,500000-Number(c.current.replace(/[$,]/g,''))));
+    const first=data[0].date;
+    const last=data[data.length-1].date;
+    document.getElementById('chartMeta').innerHTML=`<span>${first.toLocaleDateString('en-US',{month:'short',year:'numeric'})}</span><span>Race to $500K</span><span>${last.toLocaleDateString('en-US',{month:'short',year:'numeric'})}</span>`;
     document.getElementById('timelineSub').textContent=`${c.points} monthly observations`;
   }catch(e){
     document.getElementById('chartWrap').innerHTML='<div style="text-align:center;padding:40px 20px"><b>Could not load Race to 500k</b><div class="sub" style="margin-top:8px">The Sheet endpoint is reachable, but its response could not be parsed.</div></div>';
@@ -567,56 +568,51 @@ function renderTimeline(){
 }
 
 function renderAssets(){
-  app.innerHTML='<div style="padding-top:60px"><div class="eyebrow">ASSETS</div><div class="heroValue" style="font-size:40px;text-align:left">$706,359</div><div class="accounts" style="margin-top:28px"><div class="sectionTitle">Liquid & Accessible</div><div class="account"><div class="row"><div class="name">IBKR</div><div class="amt">$339,913</div></div><div class="bar"><i style="width:83%"></i></div></div><div class="account"><div class="row"><div class="name">Wise</div><div class="amt">$9,700</div></div><div class="bar"><i style="width:8%"></i></div></div><div class="account"><div class="row"><div class="name">Nexo</div><div class="amt">$2,296</div></div><div class="bar"><i style="width:3%"></i></div></div><div class="account"><div class="row"><div class="name">BingX</div><div class="amt">$500</div></div><div class="bar"><i style="width:2%"></i></div></div><div class="account"><div class="row"><div class="name">Cash</div><div class="amt">$9,600</div></div><div class="bar"><i style="width:8%"></i></div></div></div><div class="illiquid"><div class="sectionTitle">Long Term / Illiquid</div><div class="row"><div class="name">Equity</div><div class="amt">$272,350</div></div><div class="sub">Long term investment · not sellable</div></div></div>';
+  const d=window.__overviewData||{};
+  const moneyOrDash=n=>Number.isFinite(n)?money(n):'—';
+  const liquid=Number.isFinite(d.liquid)?d.liquid:0;
+  const accounts=[
+    ['IBKR',d.ibkr],['Wise',d.wise],['Nexo',d.nexo],['BingX',d.bingx],['Cash',d.cash]
+  ];
+  const totalAccounts=accounts.reduce((s,x)=>s+(Number.isFinite(x[1])?x[1]:0),0);
+
+  app.innerHTML=`<div style="padding-top:60px">
+    <div class="eyebrow">ASSETS</div>
+    <div class="heroValue" id="assetsTotalNW" style="font-size:40px;text-align:left">${moneyOrDash(d.total)}</div>
+    <div class="accounts" style="margin-top:28px">
+      <div class="sectionTitle">Liquid & Accessible</div>
+      ${accounts.map(([name,value])=>{
+        const pct=liquid>0 && Number.isFinite(value)?(value/liquid*100):0;
+        const bar=totalAccounts>0 && Number.isFinite(value)?(value/totalAccounts*100):0;
+        return `<div class="account">
+          <div class="row"><div class="name">${name}</div><div class="amt">${moneyOrDash(value)}</div></div>
+          <div class="sub">${Number.isFinite(value)&&liquid>0?pct.toFixed(1)+'% of liquid':''}</div>
+          <div class="bar"><i style="width:${Math.max(1,Math.min(100,bar))}%"></i></div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="illiquid">
+      <div class="sectionTitle">Long Term / Illiquid</div>
+      <div class="row"><div class="name">Equity</div><div class="amt">${moneyOrDash(d.equity)}</div></div>
+      <div class="sub">Long term investment · not sellable</div>
+      <div class="row" style="margin-top:18px"><div class="name">Real Estate</div><div class="amt">${moneyOrDash(d.realEstate)}</div></div>
+    </div>
+  </div>`;
 }
+
 function renderSettings(){
   app.innerHTML='<div style="padding-top:60px"><div class="eyebrow">SETTINGS</div><div class="heroValue" style="font-size:40px;text-align:left">Preferences</div><div class="section" style="margin-top:28px"><div class="sectionTitle">Dashboard</div><div class="row"><span>Currency</span><b>USD</b></div><div class="row" style="margin-top:18px"><span>Data source</span><b>Google Sheets</b></div><div class="row" style="margin-top:18px"><span>Refresh</span><b>Automatic</b></div></div></div>';
 }
 navs.forEach(btn=>btn.addEventListener('click',async()=>{
   navs.forEach(x=>x.classList.remove('active')); btn.classList.add('active');
   const v=btn.dataset.view;
-  if(v==='overview') app.innerHTML=overviewHTML;
+  if(v==='overview'){ app.innerHTML=overviewHTML; refreshOverview().catch(()=>{}); }
   if(v==='timeline') await renderTimeline();
   if(v==='assets') renderAssets();
   if(v==='settings') renderSettings();
 }));
 startOverviewRefresh();
 </script>
-
-<nav class="bottomNav" aria-label="Primary navigation">
-  <button type="button" class="navItem active" data-view="overview" id="nav-overview">
-    <span class="navIcon">⌂</span><span>Overview</span>
-  </button>
-  <button type="button" class="navItem" data-view="timeline" id="nav-timeline">
-    <span class="navIcon">↗</span><span>Timeline</span>
-  </button>
-  <button type="button" class="navItem" data-view="assets" id="nav-assets">
-    <span class="navIcon">◫</span><span>Assets</span>
-  </button>
-  <button type="button" class="navItem" data-view="settings" id="nav-settings">
-    <span class="navIcon">⚙</span><span>Settings</span>
-  </button>
-</nav>
-
-
-(function(){
-  const navItems=document.querySelectorAll('.navItem[data-view]');
-  navItems.forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      const view=btn.dataset.view;
-      navItems.forEach(b=>b.classList.toggle('active',b===btn));
-      if(typeof showView==='function'){
-        showView(view);
-      }else if(typeof renderView==='function'){
-        renderView(view);
-      }else{
-        document.querySelectorAll('[data-view-panel]').forEach(panel=>{
-          panel.hidden=panel.dataset.viewPanel!==view;
-        });
-      }
-    });
-  });
-})();
 
 </body>
 </html>
