@@ -61,14 +61,23 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
   .timelineChart svg text{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;font-stretch:normal;letter-spacing:0}
 }
 
-/* Quarterly timeline */
-#quarterScroller{scrollbar-width:none}
-#quarterScroller::-webkit-scrollbar{display:none}
-.quarterBar{font:inherit}
+
+
+/* Mobile optimized bar chart */
+#barScroller{scrollbar-width:none}
+#barScroller::-webkit-scrollbar{display:none}
+.mobileQuarter{cursor:pointer}
+.mobileQuarter .barValue{font-size:10px;font-weight:650;color:#8a9aac;white-space:nowrap;margin-bottom:7px;opacity:0;transform:translateY(4px);transition:.18s}
+.mobileQuarter.selected .barValue{opacity:1;transform:none;color:#2f80ed;font-size:11px}
+.mobileQuarter .barFill{display:block;width:54px;background:#dce9f4;border-radius:9px 9px 4px 4px;transition:.2s}
+.mobileQuarter .barFill.active,.mobileQuarter.selected .barFill{background:linear-gradient(180deg,#2f80ed,#78b5ea);box-shadow:0 7px 16px rgba(47,128,237,.16)}
+.mobileQuarter .barLabel{font-size:10px;font-weight:650;color:#98a4b1;margin-top:8px;white-space:nowrap}
+.mobileQuarter.selected .barLabel{color:#2f80ed;font-weight:750}
 @media(max-width:600px){
-  #quarterScroller{margin-left:-12px;margin-right:-12px;padding-left:calc(50vw - 40px);padding-right:calc(50vw - 40px)}
-  #quarterChart{gap:8px}
-  .quarterBar{width:68px!important;min-width:68px!important}
+  #barScroller{margin-left:-8px;margin-right:-8px}
+  #barChart{gap:12px;padding-left:calc(50vw - 35px)!important;padding-right:calc(50vw - 35px)!important}
+  .mobileQuarter{width:68px;min-width:68px}
+  .mobileQuarter .barFill{width:48px}
 }
 </style>
 
@@ -488,81 +497,84 @@ async function renderTimeline(){
   app.innerHTML=`<div style="padding-top:30px">
     <div class="eyebrow">TIMELINE</div>
     <div style="text-align:center;margin-top:5px">
-      <div id="timelineMonth" style="font-size:12px;font-weight:700;color:#8d98a7;text-transform:uppercase;letter-spacing:.08em">CURRENT MONTH</div>
+      <div id="timelineMonth" style="font-size:11px;font-weight:700;color:#8d98a7;text-transform:uppercase;letter-spacing:.08em">CURRENT MONTH</div>
       <div id="timelineCurrent" class="heroValue" style="font-size:46px;margin-top:2px">—</div>
       <div id="timelineDelta" class="sub" style="margin-top:2px">Loading history…</div>
     </div>
-    <div id="quarterScroller" style="margin-top:22px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding:8px 4px 18px">
-      <div id="quarterChart" style="display:flex;align-items:flex-end;gap:10px;height:310px;width:max-content;min-width:100%"></div>
+
+    <div id="barScroller" style="margin-top:24px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;padding:18px 0 10px">
+      <div id="barChart" style="display:flex;align-items:flex-end;gap:14px;height:300px;width:max-content;padding:0 18px"></div>
     </div>
-    <div style="text-align:center;font-size:10px;color:#a0a9b5;margin-top:-3px">Swipe to explore quarters</div>
+    <div style="display:flex;justify-content:center;gap:5px;align-items:center;font-size:10px;color:#9aa5b2;margin-top:2px">
+      <span>←</span><span>Swipe to explore</span><span>→</span>
+    </div>
   </div>`;
 
   try{
     const data=await getTimelineData();
+
     const quarters=[];
-    const map=new Map();
+    const groups=new Map();
 
     data.forEach(d=>{
       const q=Math.floor(d.date.getMonth()/3)+1;
-      const key=`${d.date.getFullYear()}-Q${q}`;
-      if(!map.has(key)) map.set(key,[]);
-      map.get(key).push(d.total);
+      const key=`${d.date.getFullYear()}-${q}`;
+      if(!groups.has(key)) groups.set(key,[]);
+      groups.get(key).push(d.total);
     });
 
-    map.forEach((values,key)=>{
-      const [year,q]=key.split('-Q');
+    groups.forEach((values,key)=>{
+      const [year,q]=key.split('-').map(Number);
       quarters.push({
-        key,year:Number(year),q:Number(q),
+        year,q,
         value:values.reduce((a,b)=>a+b,0)/values.length
       });
     });
 
-    const max=Math.max(...quarters.map(q=>q.value),500000);
     const latest=data.at(-1);
     const current=latest?.total||0;
-    const previous=data.length>1?data.at(-2)?.total:current;
+    const previous=data.at(-2)?.total||current;
     const delta=current-previous;
-    const monthLabel=latest?.date.toLocaleDateString('en-US',{month:'long',year:'numeric'})||'Current month';
+    const month=latest?.date.toLocaleDateString('en-US',{month:'long',year:'numeric'})||'Current month';
 
-    document.getElementById('timelineMonth').textContent=monthLabel;
+    document.getElementById('timelineMonth').textContent=month;
     document.getElementById('timelineCurrent').textContent=money(current);
-    document.getElementById('timelineDelta').textContent=
-      `${delta>=0?'+':''}${money(delta)} vs previous month`;
+    document.getElementById('timelineDelta').textContent=`${delta>=0?'+':''}${money(delta)} vs previous month`;
 
-    const chart=document.getElementById('quarterChart');
+    const max=Math.max(...quarters.map(q=>q.value),500000);
+    const chart=document.getElementById('barChart');
 
     chart.innerHTML=quarters.map((q,i)=>{
-      const h=Math.max(28,Math.round((q.value/max)*235));
-      const isCurrent=i===quarters.length-1;
-      return `<button type="button" class="quarterBar" data-index="${i}" aria-label="${q.year} Q${q.q}, ${money(q.value)}"
-        style="scroll-snap-align:center;border:0;background:transparent;padding:0;width:72px;min-width:72px;height:285px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;cursor:pointer">
-        <span style="font-size:12px;font-weight:750;color:${isCurrent?'#2f80ed':'#60758b'};margin-bottom:7px">${money(q.value)}</span>
-        <span style="width:54px;height:${h}px;border-radius:12px 12px 5px 5px;background:${isCurrent?'linear-gradient(180deg,#2f80ed,#7db8f0)':'linear-gradient(180deg,#dbeaf7,#b9d3e9)'};box-shadow:${isCurrent?'0 8px 20px rgba(47,128,237,.18)':'none'}"></span>
-        <span style="font-size:11px;font-weight:${isCurrent?'750':'600'};color:${isCurrent?'#2f80ed':'#8d98a7'};margin-top:8px">Q${q.q} '${String(q.year).slice(2)}</span>
+      const height=Math.max(24,Math.round((q.value/max)*225));
+      const active=i===quarters.length-1;
+
+      return `<button class="mobileQuarter" type="button" data-index="${i}" aria-label="${q.year} Q${q.q}, ${money(q.value)}"
+        style="scroll-snap-align:center;width:70px;min-width:70px;height:285px;padding:0;border:0;background:none;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;font:inherit">
+        <span class="barValue">${money(q.value)}</span>
+        <span class="barFill ${active?'active':''}" style="height:${height}px"></span>
+        <span class="barLabel">Q${q.q} '${String(q.year).slice(2)}</span>
       </button>`;
     }).join('');
 
-    const buttons=[...chart.querySelectorAll('.quarterBar')];
-    buttons.forEach((button,i)=>{
-      button.addEventListener('click',()=>{
-        buttons.forEach(b=>b.style.transform='scale(1)');
-        button.style.transform='scale(1.04)';
-        button.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
-        const q=quarters[i];
-        document.getElementById('timelineMonth').textContent=`${q.year} · Q${q.q}`;
-        document.getElementById('timelineCurrent').textContent=money(q.value);
-        document.getElementById('timelineDelta').textContent=`Quarterly average · ${money(q.value)}`;
-      });
-    });
+    const buttons=[...chart.querySelectorAll('.mobileQuarter')];
 
-    // Start with the latest quarter centered.
+    const select=(i,scroll=true)=>{
+      buttons.forEach((b,n)=>b.classList.toggle('selected',n===i));
+      const q=quarters[i];
+      document.getElementById('timelineMonth').textContent=`${q.year} · Q${q.q}`;
+      document.getElementById('timelineCurrent').textContent=money(q.value);
+      document.getElementById('timelineDelta').textContent='Quarterly average';
+      if(scroll) buttons[i]?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+    };
+
+    buttons.forEach((b,i)=>b.addEventListener('click',()=>select(i)));
+    select(quarters.length-1,false);
+
     requestAnimationFrame(()=>{
       buttons.at(-1)?.scrollIntoView({behavior:'instant',block:'nearest',inline:'center'});
     });
   }catch(e){
-    document.getElementById('quarterChart').innerHTML=
-      '<div style="padding:80px 24px;text-align:center;color:#8d98a7">Could not load Race to 500k</div>';
+    document.getElementById('barChart').innerHTML='<div style="padding:90px 20px;text-align:center;color:#8d98a7">Could not load Race to 500k</div>';
     console.error(e);
   }
 }
