@@ -60,6 +60,16 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
 @media(max-width:600px){
   .timelineChart svg text{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;font-stretch:normal;letter-spacing:0}
 }
+
+/* Quarterly timeline */
+#quarterScroller{scrollbar-width:none}
+#quarterScroller::-webkit-scrollbar{display:none}
+.quarterBar{font:inherit}
+@media(max-width:600px){
+  #quarterScroller{margin-left:-12px;margin-right:-12px;padding-left:calc(50vw - 40px);padding-right:calc(50vw - 40px)}
+  #quarterChart{gap:8px}
+  .quarterBar{width:68px!important;min-width:68px!important}
+}
 </style>
 
 <link rel="icon" type="image/png" sizes="180x180" href="./icons/icon-180.png">
@@ -477,53 +487,82 @@ function timelineSVG(data){
 async function renderTimeline(){
   app.innerHTML=`<div style="padding-top:30px">
     <div class="eyebrow">TIMELINE</div>
-    <div style="margin-top:8px">
-      <div class="heroValue" style="font-size:40px;margin:0">Net Worth</div>
-      <div id="timelineSub" class="sub" style="margin-top:6px">Loading Race to 500k…</div>
+    <div style="text-align:center;margin-top:5px">
+      <div id="timelineMonth" style="font-size:12px;font-weight:700;color:#8d98a7;text-transform:uppercase;letter-spacing:.08em">CURRENT MONTH</div>
+      <div id="timelineCurrent" class="heroValue" style="font-size:46px;margin-top:2px">—</div>
+      <div id="timelineDelta" class="sub" style="margin-top:2px">Loading history…</div>
     </div>
-    <div class="section" style="margin-top:18px;padding:12px 8px 14px">
-      <div id="chartWrap" style="min-height:330px;display:grid;place-items:center;color:#9aa4b3;font-size:12px">Loading your history…</div>
+    <div id="quarterScroller" style="margin-top:22px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding:8px 4px 18px">
+      <div id="quarterChart" style="display:flex;align-items:flex-end;gap:10px;height:310px;width:max-content;min-width:100%"></div>
     </div>
-    <div id="timelineHint" style="text-align:center;margin-top:12px;font-size:10px;color:#9aa4b3">Swipe to explore each year</div>
+    <div style="text-align:center;font-size:10px;color:#a0a9b5;margin-top:-3px">Swipe to explore quarters</div>
   </div>`;
 
   try{
     const data=await getTimelineData();
-    const c=timelineSVG(data);
-    document.getElementById('chartWrap').innerHTML=c.svg;
-    document.getElementById('timelineSub').textContent=`${c.points} monthly observations · Race to $500K`;
-    const svg=document.querySelector('#chartWrap svg');
-    if(svg){
-      let startX=0,zoom=1;
-      const years=[...new Set(data.map(d=>d.date.getFullYear()))];
-      let idx=years.length-1;
-      const focusYear=()=>{
-        const year=years[idx];
-        const points=data.filter(d=>d.date.getFullYear()===year);
-        const value=points.at(-1)?.total;
-        const label=document.getElementById('timelineHint');
-        if(label) label.textContent=`${year} · ${money(value||0)} · swipe`;
-      };
-      focusYear();
-      svg.addEventListener('touchstart',e=>{startX=e.touches[0].clientX},{passive:true});
-      svg.addEventListener('touchend',e=>{
-        const dx=e.changedTouches[0].clientX-startX;
-        if(Math.abs(dx)>35){
-          idx=Math.max(0,Math.min(years.length-1,idx+(dx<0?1:-1)));
-          focusYear();
-        }
-      },{passive:true});
-      svg.addEventListener('wheel',e=>{
-        if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){
-          zoom=Math.max(.85,Math.min(1.35,zoom+(e.deltaY<0?.08:-.08)));
-          svg.style.transform=`scaleX(${zoom})`;
-          svg.style.transformOrigin='center';
-        }
-      },{passive:true});
-    }
+    const quarters=[];
+    const map=new Map();
+
+    data.forEach(d=>{
+      const q=Math.floor(d.date.getMonth()/3)+1;
+      const key=`${d.date.getFullYear()}-Q${q}`;
+      if(!map.has(key)) map.set(key,[]);
+      map.get(key).push(d.total);
+    });
+
+    map.forEach((values,key)=>{
+      const [year,q]=key.split('-Q');
+      quarters.push({
+        key,year:Number(year),q:Number(q),
+        value:values.reduce((a,b)=>a+b,0)/values.length
+      });
+    });
+
+    const max=Math.max(...quarters.map(q=>q.value),500000);
+    const latest=data.at(-1);
+    const current=latest?.total||0;
+    const previous=data.length>1?data.at(-2)?.total:current;
+    const delta=current-previous;
+    const monthLabel=latest?.date.toLocaleDateString('en-US',{month:'long',year:'numeric'})||'Current month';
+
+    document.getElementById('timelineMonth').textContent=monthLabel;
+    document.getElementById('timelineCurrent').textContent=money(current);
+    document.getElementById('timelineDelta').textContent=
+      `${delta>=0?'+':''}${money(delta)} vs previous month`;
+
+    const chart=document.getElementById('quarterChart');
+
+    chart.innerHTML=quarters.map((q,i)=>{
+      const h=Math.max(28,Math.round((q.value/max)*235));
+      const isCurrent=i===quarters.length-1;
+      return `<button type="button" class="quarterBar" data-index="${i}" aria-label="${q.year} Q${q.q}, ${money(q.value)}"
+        style="scroll-snap-align:center;border:0;background:transparent;padding:0;width:72px;min-width:72px;height:285px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;cursor:pointer">
+        <span style="font-size:12px;font-weight:750;color:${isCurrent?'#2f80ed':'#60758b'};margin-bottom:7px">${money(q.value)}</span>
+        <span style="width:54px;height:${h}px;border-radius:12px 12px 5px 5px;background:${isCurrent?'linear-gradient(180deg,#2f80ed,#7db8f0)':'linear-gradient(180deg,#dbeaf7,#b9d3e9)'};box-shadow:${isCurrent?'0 8px 20px rgba(47,128,237,.18)':'none'}"></span>
+        <span style="font-size:11px;font-weight:${isCurrent?'750':'600'};color:${isCurrent?'#2f80ed':'#8d98a7'};margin-top:8px">Q${q.q} '${String(q.year).slice(2)}</span>
+      </button>`;
+    }).join('');
+
+    const buttons=[...chart.querySelectorAll('.quarterBar')];
+    buttons.forEach((button,i)=>{
+      button.addEventListener('click',()=>{
+        buttons.forEach(b=>b.style.transform='scale(1)');
+        button.style.transform='scale(1.04)';
+        button.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+        const q=quarters[i];
+        document.getElementById('timelineMonth').textContent=`${q.year} · Q${q.q}`;
+        document.getElementById('timelineCurrent').textContent=money(q.value);
+        document.getElementById('timelineDelta').textContent=`Quarterly average · ${money(q.value)}`;
+      });
+    });
+
+    // Start with the latest quarter centered.
+    requestAnimationFrame(()=>{
+      buttons.at(-1)?.scrollIntoView({behavior:'instant',block:'nearest',inline:'center'});
+    });
   }catch(e){
-    document.getElementById('chartWrap').innerHTML='<div style="text-align:center;padding:40px 20px"><b>Could not load Race to 500k</b><div class="sub" style="margin-top:8px">The Sheet endpoint is reachable, but its response could not be parsed.</div></div>';
-    document.getElementById('timelineSub').textContent='Race to 500k connection error';
+    document.getElementById('quarterChart').innerHTML=
+      '<div style="padding:80px 24px;text-align:center;color:#8d98a7">Could not load Race to 500k</div>';
     console.error(e);
   }
 }
