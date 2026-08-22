@@ -65,22 +65,30 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
 
 
 
-/* Mobile optimized monthly bar chart */
+
+
+/* Mobile optimized all-history timeline */
 #monthScroller{scrollbar-width:none}
 #monthScroller::-webkit-scrollbar{display:none}
-.mobileMonth{cursor:pointer}
-.mobileMonth .monthValue{font-size:9px;font-weight:650;color:#8a9aac;white-space:nowrap;margin-bottom:7px;opacity:0;transform:translateY(4px);transition:.18s}
-.mobileMonth.selected .monthValue{opacity:1;transform:none;color:#2f80ed;font-size:10px}
-.mobileMonth .monthFill{display:block;width:42px;background:#dce9f4;border-radius:8px 8px 4px 4px;transition:.2s}
-.mobileMonth .monthFill.active,.mobileMonth.selected .monthFill{background:linear-gradient(180deg,#2f80ed,#78b5ea);box-shadow:0 7px 16px rgba(47,128,237,.16)}
-.mobileMonth .monthLabel{font-size:9px;font-weight:650;color:#98a4b1;margin-top:8px;white-space:nowrap}
-.mobileMonth.selected .monthLabel{color:#2f80ed;font-weight:750}
+.historyMonth{cursor:pointer}
+.historyMonth .monthValue{font-size:9px;font-weight:650;color:#8a9aac;white-space:nowrap;margin-bottom:7px;opacity:0;transform:translateY(4px);transition:.18s}
+.historyMonth.selected .monthValue{opacity:1;transform:none;color:#2f80ed;font-size:10px}
+.historyMonth .monthFill{display:block;width:40px;background:#dce9f4;border-radius:8px 8px 4px 4px;transition:.18s}
+.historyMonth .monthFill.active,.historyMonth.selected .monthFill{background:linear-gradient(180deg,#2f80ed,#78b5ea);box-shadow:0 7px 16px rgba(47,128,237,.16)}
+.historyMonth .monthLabel{font-size:9px;font-weight:650;color:#98a4b1;margin-top:8px;white-space:nowrap}
+.historyMonth.selected .monthLabel{color:#2f80ed;font-weight:750}
 @media(max-width:600px){
   #monthScroller{margin-left:-8px;margin-right:-8px}
-  #monthChart{gap:9px!important;padding-left:calc(50vw - 29px)!important;padding-right:calc(50vw - 29px)!important}
-  .mobileMonth{width:54px!important;min-width:54px!important}
-  .mobileMonth .monthFill{width:38px}
+  #monthChart{padding-left:calc(50vw - 28px)!important;padding-right:calc(50vw - 28px)!important}
+  .historyMonth{width:54px;min-width:54px}
+  .historyMonth .monthFill{width:38px}
 }
+
+/* Consistent growth indicator */
+.growthPill{display:inline-flex;align-items:center;gap:4px;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:-.01em;line-height:1}
+.growthPill.up{background:#edf8f2;color:#2f9b68}
+.growthPill.down{background:#fff0f0;color:#d15f5f}
+.growthPill.flat{background:#f1f4f7;color:#7f8b98}
 </style>
 
 <link rel="icon" type="image/png" sizes="180x180" href="./icons/icon-180.png">
@@ -499,118 +507,105 @@ async function renderTimeline(){
   app.innerHTML=`<div style="padding-top:30px">
     <div class="eyebrow">TIMELINE</div>
 
-    <div style="display:flex;justify-content:center;align-items:center;margin-top:8px">
-      <div style="position:relative">
-        <button id="yearSelector" type="button" aria-haspopup="listbox" aria-expanded="false"
-          style="border:0;background:#f1f5f9;border-radius:14px;padding:10px 15px;font:inherit;font-size:13px;font-weight:750;color:#50677f;min-width:105px">
-          <span id="selectedYear">2026</span> ▾
-        </button>
-        <div id="yearMenu" role="listbox"
-          style="display:none;position:absolute;z-index:20;top:48px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--line);border-radius:15px;box-shadow:0 12px 30px rgba(30,50,70,.12);padding:6px;min-width:125px;max-height:260px;overflow:auto">
-        </div>
-      </div>
-    </div>
-
-    <div style="text-align:center;margin-top:14px">
-      <div id="timelineMonth" style="font-size:11px;font-weight:700;color:#8d98a7;text-transform:uppercase;letter-spacing:.08em">CURRENT MONTH</div>
+    <div style="text-align:center;margin-top:8px">
+      <div id="timelineMonth" style="font-size:11px;font-weight:700;color:#8d98a7;letter-spacing:.08em">CURRENT MONTH</div>
       <div id="timelineCurrent" class="heroValue" style="font-size:46px;margin-top:2px">—</div>
-      <div id="timelineDelta" class="sub" style="margin-top:2px">Loading history…</div>
+      <div id="timelineDelta" class="growthPill up">Loading…</div>
     </div>
 
-    <div id="monthScroller" style="margin-top:24px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none">
-      <div id="monthChart" style="display:flex;align-items:flex-end;gap:10px;height:300px;width:max-content;padding:0 18px"></div>
+    <div id="monthScroller" style="margin-top:24px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;touch-action:pan-x">
+      <div id="monthChart" style="display:flex;align-items:flex-end;gap:9px;height:300px;width:max-content;padding:0 18px"></div>
     </div>
-    <div style="text-align:center;font-size:10px;color:#9aa5b2;margin-top:2px">Swipe to explore the year</div>
+    <div style="display:flex;justify-content:center;gap:6px;align-items:center;font-size:10px;color:#9aa5b2;margin-top:2px">
+      <span>←</span><span>Swipe through history</span><span>→</span>
+    </div>
   </div>`;
 
   try{
     const data=await getTimelineData();
+    const latest=data.at(-1);
+    const previous=data.at(-2);
+    const current=latest?.total||0;
+    const delta=previous?current-previous.total:0;
 
-    const years=[...new Set(data.map(d=>d.date.getFullYear()))].sort((a,b)=>a-b);
-    const currentYear=data.at(-1)?.date.getFullYear() || new Date().getFullYear();
-    const selector=document.getElementById('yearSelector');
-    const selected=document.getElementById('selectedYear');
-    const menu=document.getElementById('yearMenu');
-    const monthChart=document.getElementById('monthChart');
+    const monthLabel=latest?.date.toLocaleDateString('en-US',{month:'long',year:'numeric'})||'Current';
+    document.getElementById('timelineMonth').textContent=monthLabel;
+    document.getElementById('timelineCurrent').textContent=money(current);
+    const pct=previous&&previous.total?((current-previous.total)/previous.total)*100:0;
+    const deltaEl=document.getElementById('timelineDelta');
+    deltaEl.textContent=`${pct>=0?'↑':'↓'} ${Math.abs(pct).toFixed(2)}% vs last month`;
+    deltaEl.className=`growthPill ${pct>0?'up':pct<0?'down':'flat'}`;
 
-    years.slice().reverse().forEach(year=>{
-      const option=document.createElement('button');
-      option.type='button';
-      option.textContent=year;
-      option.setAttribute('role','option');
-      option.style.cssText='display:block;width:100%;border:0;background:none;padding:9px 12px;border-radius:10px;font:inherit;font-size:13px;text-align:center;color:#60758b';
-      option.addEventListener('click',()=>{
-        renderYear(year);
-        menu.style.display='none';
-        selector.setAttribute('aria-expanded','false');
-      });
-      menu.appendChild(option);
-    });
+    const max=Math.max(...data.map(d=>d.total),500000);
+    const chart=document.getElementById('monthChart');
 
-    selector.addEventListener('click',()=>{
-      const open=menu.style.display==='block';
-      menu.style.display=open?'none':'block';
-      selector.setAttribute('aria-expanded',String(!open));
-    });
+    chart.innerHTML=data.map((d,i)=>{
+      const height=Math.max(24,Math.round((d.total/max)*225));
+      const active=i===data.length-1;
+      const label=d.date.toLocaleDateString('en-US',{month:'short',year:'2-digit'}).replace(' ',' ');
+      return `<button class="historyMonth" type="button" data-index="${i}" aria-label="${label}, ${money(d.total)}"
+        style="width:56px;min-width:56px;height:285px;padding:0;border:0;background:none;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;font:inherit">
+        <span class="monthValue">${money(d.total)}</span>
+        <span class="monthFill ${active?'active':''}" style="height:${height}px"></span>
+        <span class="monthLabel">${label}</span>
+      </button>`;
+    }).join('');
 
-    document.addEventListener('click',e=>{
-      if(!selector.contains(e.target)&&!menu.contains(e.target)){
-        menu.style.display='none';
-        selector.setAttribute('aria-expanded','false');
+    const buttons=[...chart.querySelectorAll('.historyMonth')];
+
+    let selected=data.length-1;
+    let zoom=1;
+
+    const selectMonth=(i,scroll=true)=>{
+      selected=Math.max(0,Math.min(data.length-1,i));
+      buttons.forEach((b,n)=>b.classList.toggle('selected',n===selected));
+      const row=data[selected];
+      const prev=data[selected-1];
+      const diff=prev?row.total-prev.total:0;
+      document.getElementById('timelineMonth').textContent=row.date.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+      document.getElementById('timelineCurrent').textContent=money(row.total);
+      const pct=prev&&prev.total?((row.total-prev.total)/prev.total)*100:0;
+      const deltaEl=document.getElementById('timelineDelta');
+      deltaEl.textContent=prev?`${pct>=0?'↑':'↓'} ${Math.abs(pct).toFixed(2)}% vs last month`:'';
+      deltaEl.style.background=pct>=0?'#edf8f2':'#fff0f0';
+      deltaEl.style.color=pct>=0?'#2f9b68':'#d15f5f';
+      if(scroll) buttons[selected]?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+    };
+
+    buttons.forEach((b,i)=>b.addEventListener('click',()=>selectMonth(i)));
+
+    // Pinch zoom changes the density of the bar chart, without interfering
+    // with normal horizontal swipe scrolling.
+    const scroller=document.getElementById('monthScroller');
+    let pinchStart=0, baseZoom=1;
+    scroller.addEventListener('touchstart',e=>{
+      if(e.touches.length===2){
+        pinchStart=Math.hypot(
+          e.touches[0].clientX-e.touches[1].clientX,
+          e.touches[0].clientY-e.touches[1].clientY
+        );
+        baseZoom=zoom;
       }
-    },{once:true});
-
-    function renderYear(year){
-      selected.textContent=year;
-
-      const rows=data.filter(d=>d.date.getFullYear()===year);
-      const values=rows.map(d=>d.total);
-      const max=Math.max(...values,500000);
-      const latest=rows.at(-1);
-      const previous=rows.length>1?rows.at(-2):null;
-      const delta=latest&&previous?latest.total-previous.total:0;
-
-      if(!latest){
-        monthChart.innerHTML='<div style="padding:80px 20px;color:#8d98a7">No data for this year</div>';
-        return;
+    },{passive:true});
+    scroller.addEventListener('touchmove',e=>{
+      if(e.touches.length===2 && pinchStart){
+        const distance=Math.hypot(
+          e.touches[0].clientX-e.touches[1].clientX,
+          e.touches[0].clientY-e.touches[1].clientY
+        );
+        zoom=Math.max(.75,Math.min(1.8,baseZoom*(distance/pinchStart)));
+        const scale=zoom;
+        chart.style.gap=`${Math.round(9*scale)}px`;
+        buttons.forEach(b=>{
+          b.style.width=`${Math.round(56*scale)}px`;
+          b.style.minWidth=`${Math.round(56*scale)}px`;
+        });
       }
+    },{passive:true});
+    scroller.addEventListener('touchend',()=>{pinchStart=0},{passive:true});
 
-      document.getElementById('timelineMonth').textContent=latest.date.toLocaleDateString('en-US',{month:'long',year:'numeric'});
-      document.getElementById('timelineCurrent').textContent=money(latest.total);
-      document.getElementById('timelineDelta').textContent=`${delta>=0?'+':''}${money(delta)} vs previous month`;
-
-      monthChart.innerHTML=rows.map((d,i)=>{
-        const height=Math.max(25,Math.round((d.total/max)*225));
-        const active=i===rows.length-1;
-        const month=d.date.toLocaleDateString('en-US',{month:'short'}).toUpperCase();
-
-        return `<button class="mobileMonth" type="button" data-index="${i}" aria-label="${month} ${year}, ${money(d.total)}"
-          style="width:58px;min-width:58px;height:285px;padding:0;border:0;background:none;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;font:inherit">
-          <span class="monthValue">${money(d.total)}</span>
-          <span class="monthFill ${active?'active':''}" style="height:${height}px"></span>
-          <span class="monthLabel">${month}</span>
-        </button>`;
-      }).join('');
-
-      const buttons=[...monthChart.querySelectorAll('.mobileMonth')];
-
-      const selectMonth=i=>{
-        buttons.forEach((b,n)=>b.classList.toggle('selected',n===i));
-        const row=rows[i];
-        document.getElementById('timelineMonth').textContent=row.date.toLocaleDateString('en-US',{month:'long',year:'numeric'});
-        document.getElementById('timelineCurrent').textContent=money(row.total);
-        const prev=rows[i-1];
-        const diff=prev?row.total-prev.total:0;
-        document.getElementById('timelineDelta').textContent=prev?`${diff>=0?'+':''}${money(diff)} vs previous month`:'';
-        buttons[i]?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
-      };
-
-      buttons.forEach((b,i)=>b.addEventListener('click',()=>selectMonth(i)));
-      selectMonth(rows.length-1);
-    }
-
-    renderYear(currentYear);
-
+    selectMonth(selected,false);
+    requestAnimationFrame(()=>buttons.at(-1)?.scrollIntoView({behavior:'instant',block:'nearest',inline:'center'}));
   }catch(e){
     document.getElementById('monthChart').innerHTML='<div style="padding:90px 20px;text-align:center;color:#8d98a7">Could not load Race to 500k</div>';
     console.error(e);
