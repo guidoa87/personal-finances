@@ -54,11 +54,14 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
 .nav.active .nicon{color:#2f80ed}
 @media(min-width:700px){.app{max-width:920px}.cards{grid-template-columns:repeat(4,1fr)}.sectionGrid{grid-template-columns:1fr 1fr}.water{height:210px}.heroValue{font-size:64px}.bottom{max-width:920px}}
 
+
+
 /* Timeline mobile typography */
 @media (max-width:600px){
+  .timelineChart{overflow:hidden}
   .timelineChart svg{display:block;width:100%;height:auto;overflow:visible}
   .timelineChart svg text{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;font-stretch:normal;letter-spacing:0}
-  .timelineChart{overflow:hidden}
+  .timelineChart .value,.timelineChart .label,.timelineChart .smallDelta{font-stretch:normal;letter-spacing:0;line-height:1.25}
 }
 </style>
 
