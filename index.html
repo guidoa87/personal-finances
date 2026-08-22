@@ -58,18 +58,23 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
 
 
 
+
 /* Timeline responsive chart */
 .timelineChart{width:100%;overflow:hidden}
-.timelineChart svg{display:block;width:100%;height:auto;max-width:100%;overflow:visible}
-.timelineChart svg text{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;font-stretch:normal;letter-spacing:0}
-@media (max-width:600px){
-  .timelineChart{margin-left:-2px;margin-right:-2px;width:calc(100% + 4px)}
-  .timelineChart svg{width:100%;height:auto;min-height:250px}
-  .timelineChart svg text{font-size:10px}
-  .timelineChart .timelineYearLabel{font-size:10px}
-  .timelineChart .timelineValueLabel{display:none}
+.timelineChart svg{display:block;width:100%;height:auto;overflow:visible}
+.timelineChart text{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;font-stretch:normal;letter-spacing:0}
+.timelineYear{font-size:11px;font-weight:700;fill:#6f849c}
+.timelineAxis{font-size:11px;fill:#9aa9ba}
+.timelineTarget{font-size:11px;font-weight:600;fill:#8aaed1}
+.timelineCurrent{font-size:12px;font-weight:700;fill:#2f80ed}
+@media(max-width:600px){
+  .timelineChart{margin:0;width:100%}
+  .timelineChart svg{width:100%;height:auto;min-height:220px}
+  .timelineYear{font-size:10px}
+  .timelineAxis{font-size:10px}
+  .timelineTarget{font-size:10px}
+  .timelineCurrent{font-size:11px}
 }
-
 </style>
 
 <link rel="icon" type="image/png" sizes="180x180" href="./icons/icon-180.png">
@@ -374,134 +379,154 @@ function startOverviewRefresh(){
 }
 
 async function getTimelineData(){
-  const url = SHEET_API + '?gid=' + TIMELINE_GID + '&sheet=' + encodeURIComponent(TIMELINE_SHEET_NAME);
-  const res=await fetch(url,{cache:'no-store'});
+  const url = SHEET_API + '?gid=' + TIMELINE_GID;
+  const res = await fetch(url + '&_=' + Date.now(), {cache:'no-store'});
   if(!res.ok) throw new Error('Google Apps Script unavailable');
 
-  let payload=await res.json();
-  if(typeof payload==='string'){
-    try{ payload=JSON.parse(payload); }catch(e){}
+  let raw = await res.text();
+  let payload;
+  try {
+    payload = JSON.parse(raw);
+  } catch(e) {
+    throw new Error('Invalid JSON from Google Apps Script');
   }
 
-  const rows=Array.isArray(payload) ? payload :
+  const rows = Array.isArray(payload) ? payload :
     (Array.isArray(payload.data) ? payload.data :
     (Array.isArray(payload.values) ? payload.values :
     (Array.isArray(payload.rows) ? payload.rows : null)));
 
-  if(!rows || !rows.length) throw new Error('Empty Race to 500k response');
+  if(!Array.isArray(rows)) throw new Error('Unexpected Apps Script response');
 
-  const points=[];
+  const points = [];
 
-  for(let i=0;i<rows.length-1;i++){
+  // Actual Race to 500k structure:
+  // blank/title row
+  // blank row
+  // 12 dates
+  // 12 values
+  // blank row
+  // 12 dates
+  // 12 values
+  // etc.
+  for(let i=0;i<rows.length;i++){
     const dateRow=Array.isArray(rows[i]) ? rows[i] : [];
-    const valueRow=Array.isArray(rows[i+1]) ? rows[i+1] : [];
-
     const dates=dateRow.map(dateValue);
+    const validDates=dates.filter(d=>d instanceof Date && !Number.isNaN(d.getTime()));
+
+    if(validDates.length < 2) continue;
+
+    // Find the next non-empty row after the date row.
+    let k=i+1;
+    while(k<rows.length && Array.isArray(rows[k]) && rows[k].every(v=>v==="" || v==null)) k++;
+    if(k>=rows.length) continue;
+
+    const valueRow=Array.isArray(rows[k]) ? rows[k] : [];
     const values=valueRow.map(num);
 
-    let valid=0;
-    for(let j=0;j<Math.min(dates.length,values.length);j++){
+    let added=0;
+    const n=Math.min(dates.length,values.length);
+
+    for(let j=0;j<n;j++){
       const d=dates[j], v=values[j];
-      if(d instanceof Date && !Number.isNaN(d.getTime()) &&
-         d.getFullYear()>=2000 && d.getFullYear()<=2100 &&
-         Number.isFinite(v) && v>0){
+      if(d instanceof Date &&
+         !Number.isNaN(d.getTime()) &&
+         d.getFullYear()>=2000 &&
+         d.getFullYear()<=2100 &&
+         Number.isFinite(v) &&
+         v>0){
         points.push({date:d,total:v});
-        valid++;
+        added++;
       }
     }
 
-    if(valid>=2) i++;
+    if(added>0) i=k;
   }
 
   const unique=new Map();
-  points.forEach(p=>{
-    const key=`${p.date.getFullYear()}-${String(p.date.getMonth()+1).padStart(2,'0')}`;
-    unique.set(key,p);
+  points.forEach(point=>{
+    const key=point.date.toISOString().slice(0,7);
+    unique.set(key,point);
   });
 
-  const data=[...unique.values()].sort((a,b)=>a.date.getTime()-b.date.getTime());
+  const data=[...unique.values()].sort((a,b)=>a.date-b.date);
 
   if(data.length<2){
-    throw new Error(`Race to 500k parsed only ${data.length} points`);
+    throw new Error('Could not parse Race to 500k history');
   }
 
   return data;
 }
 
 function timelineSVG(data){
-  const W=900,H=390,pad={l:54,r:22,t:42,b:54};
+  const W=900,H=360,pad={l:52,r:22,t:36,b:58};
   const vals=data.map(d=>d.total);
-  const min=0,max=Math.max(500000,...vals),range=max||1;
-  const plotW=W-pad.l-pad.r,plotH=H-pad.t-pad.b;
+  const max=Math.max(500000,...vals);
+  const plotW=W-pad.l-pad.r;
+  const plotH=H-pad.t-pad.b;
+
   const pts=data.map((d,i)=>({
-    x:pad.l+i*plotW/(Math.max(1,data.length-1)),
-    y:pad.t+(1-d.total/range)*plotH
+    x:pad.l+(data.length===1?plotW/2:i*plotW/(data.length-1)),
+    y:pad.t+(1-d.total/max)*plotH
   }));
 
-  const smooth=[];
-  for(let i=0;i<pts.length;i++){
-    if(i===0) smooth.push(`M ${pts[i].x.toFixed(1)} ${pts[i].y.toFixed(1)}`);
-    else{
-      const a=pts[i-1],b=pts[i],cx=(a.x+b.x)/2;
-      smooth.push(`C ${cx.toFixed(1)} ${a.y.toFixed(1)}, ${cx.toFixed(1)} ${b.y.toFixed(1)}, ${b.x.toFixed(1)} ${b.y.toFixed(1)}`);
-    }
+  let line=`M ${pts[0].x} ${pts[0].y}`;
+  for(let i=1;i<pts.length;i++){
+    const a=pts[i-1],b=pts[i],cx=(a.x+b.x)/2;
+    line+=` C ${cx} ${a.y}, ${cx} ${b.y}, ${b.x} ${b.y}`;
   }
-  const line=smooth.join(' ');
-  const area=line+` L ${pts.at(-1).x.toFixed(1)} ${H-pad.b} L ${pts[0].x.toFixed(1)} ${H-pad.b} Z`;
-  const targetY=pad.t+(1-500000/range)*plotH;
 
-  // One milestone per year, using that year's last available monthly observation.
-  const yearIndex={};
-  data.forEach((d,i)=>{yearIndex[d.date.getFullYear()]=i});
-  const years=Object.keys(yearIndex).map(Number).sort((a,b)=>a-b);
+  const area=line+` L ${pts.at(-1).x} ${H-pad.b} L ${pts[0].x} ${H-pad.b} Z`;
+  const targetY=pad.t+(1-500000/max)*plotH;
+
+  const yearLast={};
+  data.forEach((d,i)=>{yearLast[d.date.getFullYear()]=i});
+  const years=Object.keys(yearLast).map(Number).sort((a,b)=>a-b);
+
   const milestones=years.map(year=>{
-    const i=yearIndex[year],p=pts[i],v=vals[i];
-    const labelY=Math.max(p.y-38,pad.t+12);
+    const i=yearLast[year];
+    const p=pts[i];
+    const y=Math.max(p.y-24,pad.t+12);
     return `
-      <line x1="${p.x}" y1="${p.y-6}" x2="${p.x}" y2="${labelY+7}" stroke="#a9c9ed" stroke-width="1.5"/>
+      <line x1="${p.x}" y1="${p.y-5}" x2="${p.x}" y2="${y+7}" stroke="#b9d4ef" stroke-width="1.5"/>
       <circle cx="${p.x}" cy="${p.y}" r="4" fill="#2f80ed"/>
-      <text x="${p.x}" y="${labelY}" text-anchor="middle" font-size="11" font-weight="700" fill="#5d789a">${year}</text>
-      <text class="timelineValueLabel" x="${p.x}" y="${labelY+14}" text-anchor="middle" font-size="10" fill="#8ea0b4">${money(v)}</text>`;
+      <text class="timelineYear" x="${p.x}" y="${y}" text-anchor="middle">${year}</text>`;
+  }).join('');
+
+  const yTicks=[0,100000,200000,300000,400000,500000].filter(v=>v<=max);
+  const ticks=yTicks.map(v=>{
+    const y=pad.t+(1-v/max)*plotH;
+    return `<text class="timelineAxis" x="${pad.l-9}" y="${y+4}" text-anchor="end">$${Math.round(v/1000)}K</text>`;
   }).join('');
 
   const last=pts.at(-1);
-  const lastLabelY=Math.max(last.y-42,pad.t+10);
-  const startYear=data[0].date.getFullYear();
-  const endYear=data.at(-1).date.getFullYear();
-  const current=vals.at(-1);
-  const high=Math.max(...vals);
-  const points=data.length;
+  const lastValue=vals.at(-1);
+  const lastLabelY=Math.max(last.y-38,pad.t+10);
 
   return {
-    current:money(current),
-    high:high,
-    points:points,
-    svg:`<svg viewBox="0 0 ${W} ${H}" width="100%" height="390" preserveAspectRatio="xMidYMid meet" style="display:block;width:100%;height:auto;overflow:visible">
+    current:money(lastValue),
+    high:Math.max(...vals),
+    points:data.length,
+    svg:`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Net worth progression">
       <defs>
-        <linearGradient id="area" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0" stop-color="#2f80ed" stop-opacity=".22"/>
-          <stop offset="1" stop-color="#2f80ed" stop-opacity="0"/>
+        <linearGradient id="timelineArea" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#2f80ed" stop-opacity=".20"/>
+          <stop offset="100%" stop-color="#2f80ed" stop-opacity="0"/>
         </linearGradient>
       </defs>
-      <line x1="${pad.l}" y1="${targetY}" x2="${W-pad.r}" y2="${targetY}" stroke="#bcdaf7" stroke-dasharray="5 6"/>
-      <text x="${W-pad.r}" y="${targetY-9}" text-anchor="end" font-size="11" fill="#7daee0">$500K TARGET</text>
-      <line x1="${pad.l}" y1="${H-pad.b}" x2="${W-pad.r}" y2="${H-pad.b}" stroke="#edf0f4"/>
-      <path d="${area}" fill="url(#area)"/>
+      <line x1="${pad.l}" y1="${targetY}" x2="${W-pad.r}" y2="${targetY}" stroke="#c5dcef" stroke-width="1.5" stroke-dasharray="5 6"/>
+      <text class="timelineTarget" x="${W-pad.r}" y="${targetY-8}" text-anchor="end">$500K</text>
+      ${ticks}
+      <path d="${area}" fill="url(#timelineArea)"/>
       <path d="${line}" fill="none" stroke="#2f80ed" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
       ${milestones}
       <circle cx="${last.x}" cy="${last.y}" r="6" fill="#fff" stroke="#2f80ed" stroke-width="3"/>
-      <line x1="${last.x}" y1="${last.y-8}" x2="${last.x}" y2="${lastLabelY+8}" stroke="#2f80ed" stroke-width="1.5"/>
-      <text x="${last.x}" y="${lastLabelY}" text-anchor="middle" font-size="11" font-weight="700" fill="#2f80ed">${money(vals.at(-1))}</text>
-      ${[0,100000,200000,300000,400000,500000].filter(v=>v<=max).map(v=>{
-        const y=pad.t+(1-v/range)*plotH;
-        return `<text x="${pad.l-10}" y="${y+4}" text-anchor="end" font-size="11" fill="#9aa9ba">$${Math.round(v/1000)}K</text>`;
-      }).join('')}
-      ${years.map((y)=>{const i=yearIndex[y];return `<text x="${pts[i].x}" y="${H-pad.b+30}" text-anchor="middle" font-size="11" fill="#9aa9ba">${y}</text>`}).join('')}
-    </svg>`,
-    start:`Jan ${startYear}`,
-    end:`${data.at(-1).date.toLocaleDateString('en-US',{month:'short',year:'numeric'})}`
+      <text class="timelineCurrent" x="${last.x}" y="${lastLabelY}" text-anchor="middle">${money(lastValue)}</text>
+      <line x1="${pad.l}" y1="${H-pad.b}" x2="${W-pad.r}" y2="${H-pad.b}" stroke="#edf1f5"/>
+    </svg>`
   };
 }
+
 
 function renderTimeline(){
   app.innerHTML=`<div style="padding-top:24px">
