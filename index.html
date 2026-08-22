@@ -60,6 +60,12 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
   .timelineChart svg{max-width:100%;height:auto}
   .timelineChart svg text{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;font-stretch:normal;letter-spacing:0}
 }
+/* Timeline mobile */
+@media (max-width:600px){
+  .section svg text{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;font-stretch:normal;letter-spacing:0}
+  .section svg{max-width:100%;overflow:visible}
+  .section .value,.section .label,.section .smallDelta{font-stretch:normal;letter-spacing:0;line-height:1.25}
+}
 </style>
 
 <link rel="icon" type="image/png" sizes="180x180" href="./icons/icon-180.png">
