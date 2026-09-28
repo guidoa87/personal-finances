@@ -68,6 +68,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
 .timelineChart{width:100%;overflow:hidden}
 .timelineChart svg{display:block;width:100%;height:auto;overflow:visible}
 @media(max-width:600px){
+  .chartYAxis{left:4px;width:54px}.chartMonths{left:62px}
   .timelineChart svg text{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;font-stretch:normal;letter-spacing:0}
 }
 
@@ -173,6 +174,86 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
 .growthPill.up{background:#edf8f2;color:#2f9b68}
 .growthPill.down{background:#fff0f0;color:#d15f5f}
 .growthPill.flat{background:#f1f4f7;color:#7f8b98}
+
+/* Clean grid overview */
+.hero{padding-top:34px;text-align:center}
+.heroEyebrow{font-size:11px;letter-spacing:.19em;color:#91a0b3;font-weight:700}
+.heroValue{font-size:58px;line-height:1;letter-spacing:-.055em;font-weight:760;margin:12px 0 10px}
+.delta{font-size:14px;color:#1fa66b;font-weight:650}.delta span{color:#9aa6b6;font-weight:500;margin-left:7px}
+.chart{position:relative;height:330px;margin:20px -18px 0;overflow:hidden;touch-action:pan-y}
+.chart svg{position:absolute;left:0;right:0;top:0;width:100%;height:235px}
+.chartArea{fill:url(#chartFill)}
+.chartLine{fill:none;stroke:#3d92f5;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+.chartForecast{fill:none;stroke:#9fc9f5;stroke-width:2.5;stroke-dasharray:6 6;stroke-linecap:round}
+.chartPoint{fill:#3d92f5;stroke:#fff;stroke-width:3;opacity:0}
+.chartPoint.future{fill:#fff;stroke:#3d92f5;stroke-width:3}
+.chartSelectedHalo{fill:#fff;stroke:#2f80ed;stroke-width:2;opacity:0}
+.chartSelectedCore{fill:#2f80ed;opacity:0}
+.chartYAxis{position:absolute;left:12px;top:28px;height:174px;width:58px;display:flex;flex-direction:column;justify-content:space-between;pointer-events:none;z-index:2}
+.chartYAxis span{font-size:9px;font-weight:650;color:#a0adbd;background:rgba(247,249,252,.72);padding-right:4px}
+.chartGridLine{position:absolute;left:68px;right:0;height:1px;background:#edf1f5;pointer-events:none}
+.chartGuide{position:absolute;top:30px;height:170px;width:1px;background:#a9cff6;opacity:0;pointer-events:none;z-index:3}
+.chartTooltip{position:absolute;top:6px;left:50%;transform:translateX(-50%);background:#172435;color:#fff;padding:8px 12px;border-radius:12px;font-size:12px;font-weight:700;white-space:nowrap;opacity:0;pointer-events:none;z-index:5;box-shadow:0 5px 18px rgba(22,36,53,.16)}
+.chartTooltip strong{font-size:13px}
+.chartTooltip span{display:block;margin:2px 0 0;color:#aebccc;font-size:10px}
+.chartMonths{position:absolute;left:72px;right:8px;top:222px;display:grid;grid-template-columns:repeat(6,1fr);font-size:10px;font-weight:650;letter-spacing:.06em;color:#9aa7b8}
+.chartMonths .selectedMonth{color:#2f80ed;font-weight:800}
+.chartMonths .futureLabel{color:#8ba8c4}
+.chartTapHint{position:absolute;left:0;right:0;bottom:57px;text-align:center;font-size:9px;color:#a9b4c1;opacity:.8;pointer-events:none}
+.rangeSwitch{position:absolute;left:18%;right:18%;bottom:8px;height:48px;padding:4px;display:grid;grid-template-columns:repeat(5,1fr);background:#f0f4f8;border-radius:28px;color:#8996a7;font-size:12px;font-weight:650}
+.rangeSwitch button{appearance:none;border:0;background:transparent;color:#8996a7;font:inherit;cursor:pointer;border-radius:24px}
+.rangeSwitch button.selected{background:#fff;color:#2f80ed;box-shadow:0 2px 10px rgba(40,70,100,.06)}
+
+.summaryGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:2px}
+.metricCard,.panel,.accounts,.illiquid{background:#fff;border:1px solid #e5eaf0;border-radius:22px;box-shadow:0 6px 24px rgba(29,48,72,.035)}
+.metricCard{padding:18px;min-height:142px}
+.cardLabel,.sectionTitle{font-size:11px;letter-spacing:.13em;color:#91a0b3;font-weight:750}
+.metricValue{font-size:28px;letter-spacing:-.045em;font-weight:730;margin-top:18px}
+.smallDelta{font-size:12px;color:#20a66b;margin-top:8px}
+.middleGrid{display:grid;grid-template-columns:1.25fr 1fr;gap:12px;margin-top:12px}
+.panel{padding:18px;min-height:220px}
+.allocationGrid{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:12px;margin-top:18px}
+.donutWrap{position:relative;width:132px;height:132px;margin:auto}
+.donut{width:132px;height:132px;border-radius:50%;background:conic-gradient(#2f80ed 0 78%,#82bdf4 78% 95%,#bda6ef 95% 100%);position:absolute}
+.donut:after{content:"";position:absolute;inset:27px;background:#fff;border-radius:50%}
+.donutCenter{position:absolute;inset:0;display:grid;place-content:center;text-align:center;z-index:1}
+.donutCenter strong{font-size:17px;letter-spacing:-.03em}.donutCenter span{font-size:10px;color:#9aa6b6;margin-top:3px}
+.allocationLegend{display:grid;gap:14px}.allocationLegend>div{display:grid;grid-template-columns:12px 1fr;gap:8px;align-items:start}
+.legendDot{width:10px;height:10px;border-radius:50%;margin-top:3px}.investmentsDot{background:#2f80ed}.realEstateDot{background:#82bdf4}.cashDot{background:#bda6ef}
+.allocationLegend b{display:block;font-size:11px;font-weight:650}.allocationLegend small{display:block;color:#9aa6b6;font-size:11px;margin-top:3px}
+.marketGrid{display:grid;gap:0;margin-top:18px}.marketRow{display:grid;grid-template-columns:1fr auto;align-items:center;padding:18px 0}.marketRow+.marketRow{border-top:1px solid #edf0f4}
+.marketName{font-size:12px;color:#596577}.marketValue{text-align:right;font-size:24px;font-weight:780;letter-spacing:-.045em}.marketDelta{text-align:right;font-size:11px;color:#20a66b;margin-top:4px}
+.accounts{margin-top:12px;padding:18px}.accountsHeader{display:grid;grid-template-columns:1fr auto;align-items:center}.chevron{font-size:25px;color:#9aa7b8}
+.accountGrid{display:grid;grid-template-columns:1fr;gap:0;margin-top:8px}
+.account{display:grid;grid-template-columns:58px minmax(0,1fr) auto;gap:12px;align-items:center;padding:17px 0;border-top:1px solid #edf0f4}
+.account:first-child{border-top:0}.accountIcon{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-size:19px;font-weight:750}
+.ibkrIcon{background:#fff0f0;color:#d71920}.wiseIcon{background:#eaf3ff;color:#2878e5}.nexoIcon{background:#f2edff;color:#8064d8}.bingxIcon{background:#fff4e8;color:#e19a38}.cashIcon{background:#f0f3f6;color:#7d8999}
+.accountName{font-size:14px;font-weight:680}.accountAmount{font-size:15px;font-weight:700;text-align:right}.sub{font-size:10px;color:#9ba7b6;margin-top:4px}.bar{height:4px;background:#edf2f6;border-radius:99px;margin-top:8px;overflow:hidden}.bar i{display:block;height:100%;background:#4b9af5;border-radius:99px}
+.realEstateStandalone{margin-top:12px;background:#fff;border:1px solid #e5eaf0;border-radius:22px;box-shadow:0 6px 24px rgba(29,48,72,.035);padding:18px}.realEstateRow{display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:13px;margin-top:12px}.realEstateIcon{width:48px;height:48px;border-radius:15px;background:#eef6ff;color:#2f80ed;display:grid;place-items:center;font-size:22px}.realEstateName{font-size:14px;font-weight:680}.realEstateMeta{font-size:10px;color:#9aa6b6;margin-top:4px}.realEstateRight{text-align:right}.realEstateValue{font-size:28px;font-weight:780;letter-spacing:-.05em}.realEstatePct{font-size:10px;color:#9aa6b6;margin-top:4px}
+.illiquid{margin-top:12px;padding:18px}.illiquidItem{display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:10px;align-items:center;padding:14px;background:#faf8ff;border-radius:16px}.assetIcon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:17px}.singleIlliquid{margin-top:12px}.illiquidMain{min-width:0}.equityIcon{background:#f1edff;color:#8064d8}.homeIcon{background:#eef6ff;color:#2f80ed}.name{font-size:12px;font-weight:650}.amt{font-size:13px;font-weight:700}.bottom{width:min(540px,100%);grid-template-columns:1fr 1fr}
+.floatingSwitch{bottom:14px}
+.app{padding-bottom:98px}
+@media(max-width:600px){
+  .app{padding:16px 18px 105px}
+  .heroValue{font-size:54px}
+  .chart{height:315px}
+  .middleGrid{grid-template-columns:1fr 1fr}
+  .allocationGrid{grid-template-columns:1fr}
+  .allocationLegend{grid-template-columns:1fr}
+  .donutWrap{width:118px;height:118px}.donut{width:118px;height:118px}
+  .donut:after{inset:24px}
+  .metricValue{font-size:26px}
+  .illiquidGrid{grid-template-columns:1fr}
+}
+@media(max-width:430px){
+  .middleGrid{grid-template-columns:1fr}
+  .allocationGrid{grid-template-columns:120px 1fr}
+  .allocationLegend{gap:10px}
+  .metricCard{min-height:132px}
+  .metricValue{font-size:24px}
+  .account{grid-template-columns:48px minmax(0,1fr) auto}
+  .accountIcon{width:42px;height:42px}
+}
 </style>
 
 <link rel="icon" type="image/png" sizes="180x180" href="./icons/icon-180.png">
@@ -186,77 +267,169 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
   <div class="top"><div class="brand"></div></div>
 
   <section class="hero">
-    <div class="eyebrow">LIQUID NET WORTH</div>
+    <div class="heroEyebrow">LIQUID NET WORTH</div>
     <div class="heroValue loadingValue" id="liquidNW">Loading…</div>
     <div class="delta">↑ 2.45% <span>vs last month</span></div>
-    <div class="water">
-      <svg viewBox="0 0 1200 220" preserveAspectRatio="none" aria-hidden="true">
+
+    <div class="chart">
+      <svg id="overviewChartSvg" viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true">
         <defs>
-          <linearGradient id="waterFill" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stop-color="#dff0ff"/><stop offset="1" stop-color="#f7fbff"/>
+          <linearGradient id="chartFill" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#cfe7ff" stop-opacity=".9"/>
+            <stop offset="1" stop-color="#f7fbff" stop-opacity="0"/>
           </linearGradient>
         </defs>
-        <path class="fill" d="M0 103 C120 88 190 126 300 108 C420 89 500 88 610 106 C720 124 805 91 930 105 C1040 118 1090 98 1200 110 L1200 220 L0 220Z">
-          <animate attributeName="d" dur="5s" repeatCount="indefinite"
-            values="M0 103 C120 88 190 126 300 108 C420 89 500 88 610 106 C720 124 805 91 930 105 C1040 118 1090 98 1200 110 L1200 220 L0 220Z;
-                    M0 109 C110 121 200 87 315 104 C420 120 520 126 625 101 C735 77 820 115 930 106 C1030 98 1110 119 1200 104 L1200 220 L0 220Z;
-                    M0 103 C120 88 190 126 300 108 C420 89 500 88 610 106 C720 124 805 91 930 105 C1040 118 1090 98 1200 110 L1200 220 L0 220Z"/>
-        </path>
-        <path class="waterLine" d="M0 103 C120 88 190 126 300 108 C420 89 500 88 610 106 C720 124 805 91 930 105 C1040 118 1090 98 1200 110">
-          <animate attributeName="d" dur="5s" repeatCount="indefinite"
-            values="M0 103 C120 88 190 126 300 108 C420 89 500 88 610 106 C720 124 805 91 930 105 C1040 118 1090 98 1200 110;
-                    M0 109 C110 121 200 87 315 104 C420 120 520 126 625 101 C735 77 820 115 930 106 C1030 98 1110 119 1200 104;
-                    M0 103 C120 88 190 126 300 108 C420 89 500 88 610 106 C720 124 805 91 930 105 C1040 118 1090 98 1200 110"/>
-        </path>
+        <path id="chartArea" class="chartArea"></path>
+        <path id="chartLine" class="chartLine"></path>
+        <path id="chartForecast" class="chartForecast"></path>
+        <circle id="chartPoint" class="chartPoint" cx="1200" cy="135" r="7"></circle>
+        <circle id="chartSelectedHalo" class="chartSelectedHalo" cx="1200" cy="135" r="12"></circle>
+        <circle id="chartSelectedCore" class="chartSelectedCore" cx="1200" cy="135" r="5"></circle>
       </svg>
-      <div class="waterLabel" id="waterNW">Loading…</div>
-      <div class="waterCaption">LIQUIDITY IS FREEDOM</div>
+      <div class="chartTooltip" id="chartTooltip" aria-live="polite"></div><div class="chartYAxis" id="chartYAxis"></div><div class="chartGuide" id="chartGuide"></div>
+      <div id="chartMonths" class="chartMonths"></div><div class="chartTapHint">Tap the graph to explore</div><div class="chartTapHint">Tap the graph to explore</div>
+      <div id="rangeSwitch" class="rangeSwitch">
+        <button class="selected" data-range="1m">1M</button>
+        <button data-range="3m">3M</button>
+        <button data-range="6m">6M</button>
+        <button data-range="1y">1Y</button>
+        <button data-range="all">ALL</button>
+      </div>
     </div>
   </section>
 
-  <section class="cards">
-    <div class="card"><div class="label">Total Net Worth</div><div class="value" id="totalNW">$706,359</div><div class="smallDelta">↑ 3.12%</div></div>
-    <div class="card"><div class="label">Accessible NW</div><div class="value" id="accessibleNW">$434,009</div><div class="smallDelta">↑ 1.85%</div></div>
-    
-    <div class="assetSplit">
-      <div class="assetItem">
-        <div class="assetItemTop">
-          <span class="assetDot realEstateDot"></span>
-          <span class="assetItemLabel">Real Estate</span>
+  <section class="summaryGrid">
+    <div class="metricCard">
+      <div class="cardLabel">TOTAL NET WORTH</div>
+      <div class="metricValue" id="totalNW">$706,359</div>
+      <div class="smallDelta">↑ 3.12%</div>
+    </div>
+    <div class="metricCard">
+      <div class="cardLabel">ACCESSIBLE NW</div>
+      <div class="metricValue" id="accessibleNW">$434,009</div>
+      <div class="smallDelta">↑ 1.85%</div>
+    </div>
+  </section>
+
+  <section class="middleGrid">
+    <div class="panel allocationPanel">
+      <div class="sectionTitle">ASSET ALLOCATION</div>
+      <div class="allocationGrid">
+        <div class="donutWrap">
+          <div class="donut"></div>
+          <div class="donutCenter">
+            <strong id="allocationTotal">$594K</strong>
+            <span>Total</span>
+          </div>
         </div>
-        <div class="assetItemValue" id="realEstate">$72,000</div>
-        <div class="assetItemPct">17%</div>
-      </div>
-      <div class="assetItem">
-        <div class="assetItemTop">
-          <span class="assetDot cashDot"></span>
-          <span class="assetItemLabel">Cash</span>
+        <div class="allocationLegend">
+          <div><i class="legendDot investmentsDot"></i><span><b>Investments</b><small><span id="investmentsPct">0%</span></small></span></div>
+          <div><i class="legendDot realEstateDot"></i><span><b>Real Estate</b><small><span id="realEstatePct">0%</span></small></span></div>
+          <div><i class="legendDot cashDot"></i><span><b>Cash</b><small><span id="cashPct">0%</span></small></span></div>
         </div>
-        <div class="assetItemValue" id="cashNW">$9,600</div>
-        <div class="assetItemPct">5%</div>
       </div>
     </div>
-    <div class="section"><div class="sectionTitle">Market</div>
-      <div class="marketRow"><div class="marketName">＄ Dólar Blue</div><div><div class="marketValue" id="dollarBlue">$1,550</div><div class="marketDelta">↑ 0.65%</div></div></div>
-      <div class="marketRow"><div class="marketName">₿ Bitcoin</div><div><div class="marketValue" id="bitcoin">$77,490</div><div class="marketDelta">↑ 1.32%</div></div></div>
+
+    <div class="panel marketPanel">
+      <div class="sectionTitle">MARKET</div>
+      <div class="marketGrid">
+        <div class="marketRow">
+          <div class="marketName">$nbsp; Dólar Blue</div>
+          <div><div class="marketValue" id="dollarBlue">$1,550</div><div class="marketDelta">↑ 0.65%</div></div>
+        </div>
+        <div class="marketRow">
+          <div class="marketName">₿nbsp; Bitcoin</div>
+          <div><div class="marketValue" id="bitcoin">$77,490</div><div class="marketDelta">↑ 1.32%</div></div>
+        </div>
+      </div>
     </div>
+
   </section>
 
   <section class="accounts">
-    <div class="sectionTitle">Liquid & Accessible</div>
-    <div class="account"><div class="row"><div class="name">IBKR</div><div class="amt">$339,913</div></div><div class="sub">82.9% of liquid & accessible</div><div class="bar"><i style="width:83%"></i></div></div>
-    <div class="account"><div class="row"><div class="name">Wise</div><div class="amt">$9,700</div></div><div class="bar"><i style="width:8%"></i></div></div>
-    <div class="account"><div class="row"><div class="name">Nexo</div><div class="amt">$2,296</div></div><div class="bar"><i style="width:3%"></i></div></div>
-    <div class="account"><div class="row"><div class="name">BingX</div><div class="amt">$500</div></div><div class="bar"><i style="width:2%"></i></div></div>
-    <div class="account"><div class="row"><div class="name">Cash</div><div class="amt">$9,600</div></div><div class="bar"><i style="width:8%"></i></div></div>
+    <div class="accountsHeader">
+      <div class="sectionTitle">ACCOUNTS</div>
+      <span class="chevron">›</span>
+    </div>
+
+    <div class="accountGrid">
+      <div class="account">
+        <div class="accountIcon ibkrIcon">I</div>
+        <div class="accountMain">
+          <div class="accountName">IBKR</div>
+          <div class="sub" id="ibkrSub">Loading…</div>
+          <div class="bar"><i style="width:83%"></i></div>
+        </div>
+        <div class="accountAmount amt">$339,913</div>
+      </div>
+
+      <div class="account">
+        <div class="accountIcon wiseIcon">W</div>
+        <div class="accountMain">
+          <div class="accountName">Wise</div>
+          <div class="sub" id="wiseSub">Loading…</div>
+          <div class="bar"><i style="width:5%"></i></div>
+        </div>
+        <div class="accountAmount amt">$9,700</div>
+      </div>
+
+      <div class="account compactAccount">
+        <div class="accountIcon nexoIcon">N</div>
+        <div class="accountMain">
+          <div class="accountName">Nexo</div>
+          <div class="sub">Liquid account</div>
+          <div class="bar"><i style="width:3%"></i></div>
+        </div>
+        <div class="accountAmount amt">$2,296</div>
+      </div>
+
+      <div class="account compactAccount">
+        <div class="accountIcon bingxIcon">B</div>
+        <div class="accountMain">
+          <div class="accountName">BingX</div>
+          <div class="sub">Liquid account</div>
+          <div class="bar"><i style="width:2%"></i></div>
+        </div>
+        <div class="accountAmount amt">$500</div>
+      </div>
+
+      <div class="account compactAccount">
+        <div class="accountIcon cashIcon">$</div>
+        <div class="accountMain">
+          <div class="accountName">Cash</div>
+          <div class="sub">Available cash</div>
+          <div class="bar"><i style="width:3%"></i></div>
+        </div>
+        <div class="accountAmount amt">$9,600</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="realEstateStandalone">
+    <div class="sectionTitle">REAL ESTATE</div>
+    <div class="realEstateRow">
+      <div class="realEstateIcon">⌂</div>
+      <div class="realEstateMain">
+        <div class="realEstateName">Property</div>
+        <div class="realEstateMeta" id="realEstateMeta">Included in Total NW · excluded from Liquid NW</div>
+      </div>
+      <div class="realEstateRight">
+        <div class="realEstateValue" id="realEstate">Loading…</div>
+        <div class="realEstatePct" id="realEstatePctMeta">— of total NW</div>
+      </div>
+    </div>
   </section>
 
   <section class="illiquid">
-    <div class="sectionTitle">Long Term / Illiquid Assets</div>
-    <div class="row"><div><div class="name">Equity</div><div class="sub">Long term investment · not sellable</div></div><div class="amt" id="equity">$272,350</div></div>
-    <div class="bar"><i style="width:100%"></i></div>
+    <div class="sectionTitle">LONG TERM / ILLIQUID</div>
+    <div class="illiquidItem singleIlliquid">
+      <div class="assetIcon equityIcon">◆</div>
+      <div class="illiquidMain"><div class="name">Equity</div><div class="sub">Long term investment · not sellable</div></div>
+      <div class="amt" id="equity">Loading…</div>
+    </div>
     <div class="note">This asset is not liquid and is excluded from Liquid Net Worth.</div>
   </section>
+
 </main>
 <nav class="floatingSwitch" aria-label="Main navigation">
   <button class="nav active" data-view="overview" aria-label="Overview">
@@ -401,18 +574,27 @@ async function refreshOverview(){
   set('liquidNW',liquid);
   set('accessibleNW',accessible);
   set('totalNW',total);
+  window.__overviewCurrentTotal=total;
   set('dollarBlue',dollar);
   set('bitcoin',bitcoin);
   set('equity',equity);
   set('realEstate',realEstate);
   set('cashNW',cash);
+  const reMeta=document.getElementById('realEstatePctMeta');
+  if(reMeta && isFinite(realEstate) && isFinite(total) && total>0) reMeta.textContent=((realEstate/total)*100).toFixed(1)+'% of total NW';
   set('investmentsNW',investments);
   set('waterNW',liquid);
+  const allocationTotal=document.getElementById('allocationTotal');
+  if(allocationTotal && isFinite(total)) allocationTotal.textContent='$'+Math.round(total/1000)+'K';
+  const setPct=(id,n)=>{const el=document.getElementById(id);if(el&&isFinite(n)&&total>0)el.textContent=(n/total*100).toFixed(1)+'%'};
+  setPct('investmentsPct',investments);
+  setPct('realEstatePct',realEstate);
+  setPct('cashPct',cash);
 
   // Update the liquid/accessibility account amounts too.
   const accountMap={IBKR:ibkr,Wise:wise,Nexo:nexo,BingX:bingx,Cash:cash};
   document.querySelectorAll('.account').forEach(row=>{
-    const name=row.querySelector('.name')?.textContent?.trim();
+    const name=row.querySelector('.accountName')?.textContent?.trim() || row.querySelector('.name')?.textContent?.trim();
     if(name && isFinite(accountMap[name])){
       const amt=row.querySelector('.amt');
       if(amt) amt.textContent=money(accountMap[name]);
@@ -461,13 +643,13 @@ function updateWaterLevel(liquid,total){
 function updateAccountBars(){
   const accounts={};
   document.querySelectorAll('.account').forEach(row=>{
-    const name=row.querySelector('.name')?.textContent?.trim();
+    const name=row.querySelector('.accountName')?.textContent?.trim() || row.querySelector('.name')?.textContent?.trim();
     const value=parseFloat((row.querySelector('.amt')?.textContent||'').replace(/[$,]/g,''));
     if(name && isFinite(value)) accounts[name]=value;
   });
   const total=Object.values(accounts).reduce((a,b)=>a+b,0);
   document.querySelectorAll('.account').forEach(row=>{
-    const name=row.querySelector('.name')?.textContent?.trim();
+    const name=row.querySelector('.accountName')?.textContent?.trim() || row.querySelector('.name')?.textContent?.trim();
     const bar=row.querySelector('.bar i');
     if(bar && total && isFinite(accounts[name])){
       bar.style.width=Math.max(1,accounts[name]/total*100)+'%';
@@ -490,9 +672,90 @@ function startOverviewRefresh(){
       refreshing=false;
     }
   };
-  run();
+  run().then(()=>refreshOverviewHistory());
+  setupOverviewRanges();
+  setupChartInteraction();
   clearInterval(window.__overviewRefresh);
   window.__overviewRefresh=setInterval(run,5000);
+}
+
+
+let overviewHistory = [];
+let overviewRange = '1m';
+
+
+function formatMonth(d){return d.toLocaleDateString('en-US',{month:'short'}).toUpperCase();}
+function getRangeCount(r){return r==='1m'?2:r==='3m'?4:r==='6m'?7:r==='1y'?13:overviewHistory.length;}
+function buildOverviewSeries(){
+  if(!overviewHistory.length)return[];
+  const a=overviewHistory.map(d=>({...d,forecast:false}));
+  const total=window.__overviewCurrentTotal,last=a.at(-1);
+  if(last&&isFinite(total)){
+    a.push({date:new Date(last.date.getFullYear(),last.date.getMonth()+1,1),total,forecast:true});
+  }
+  return a;
+}
+function renderChartYAxis(lo,hi){
+  const y=document.getElementById('chartYAxis'),c=document.querySelector('.chart');if(!y||!c)return;
+  y.innerHTML=Array.from({length:5},(_,i)=>`<span>${money(Math.round(lo+(hi-lo)*(1-i/4)))}</span>`).join('');
+  c.querySelectorAll('.chartGridLine').forEach(x=>x.remove());
+  for(let i=0;i<5;i++){const l=document.createElement('div');l.className='chartGridLine';l.style.top=(30+170*i/4)+'px';c.appendChild(l);}
+}
+function showSelectedPoint(data,i,lo,hi,w){
+  const d=data[i],x=data.length===1?w/2:i*w/(data.length-1),y=30+(1-(d.total-lo)/(hi-lo))*170;
+  ['chartSelectedHalo','chartSelectedCore'].forEach(id=>{const e=document.getElementById(id);if(e){e.setAttribute('cx',x);e.setAttribute('cy',y);e.style.opacity='1';}});
+  const g=document.getElementById('chartGuide');if(g){g.style.left=x+'px';g.style.opacity='.7';}
+  const t=document.getElementById('chartTooltip');if(t){t.innerHTML=`<strong>${money(d.total)}</strong><span>${d.date.toLocaleDateString('en-US',{month:'short',year:'numeric'})}${d.forecast?' · Current':' · Actual'}</span>`;t.style.left=Math.max(82,Math.min(w-82,x))+'px';t.style.opacity='1';}
+  document.querySelectorAll('#chartMonths span').forEach(e=>e.classList.toggle('selectedMonth',Number(e.dataset.index)===i));
+  const h=document.querySelector('.chartTapHint');if(h)h.style.opacity='0';
+}
+function selectOverviewPoint(clientX){
+  const c=document.querySelector('.chart');if(!c||!overviewHistory.length)return;
+  const r=c.getBoundingClientRect(),data=buildOverviewSeries(),x=Math.max(0,Math.min(r.width,clientX-r.left));
+  const i=Math.max(0,Math.min(data.length-1,Math.round(x/r.width*(data.length-1))));
+  const v=data.map(d=>d.total),min=Math.min(...v),max=Math.max(...v),p=Math.max((max-min)*.18,1000);
+  showSelectedPoint(data,i,min-p,max+p,r.width);
+}
+function renderOverviewChart(){
+  const line=document.getElementById('chartLine'),area=document.getElementById('chartArea'),forecast=document.getElementById('chartForecast'),point=document.getElementById('chartPoint'),months=document.getElementById('chartMonths');
+  if(!line||!area||!forecast||!point||!months||!overviewHistory.length)return;
+  const all=buildOverviewSeries(),data=all.slice(Math.max(0,all.length-getRangeCount(overviewRange)));if(!data.length)return;
+  const W=1200,H=300,top=35,bottom=45,v=data.map(d=>d.total),min=Math.min(...v),max=Math.max(...v),p=Math.max((max-min)*.18,1000),lo=min-p,hi=max+p,rg=hi-lo;
+  const pts=data.map((d,i)=>({x:data.length===1?W/2:i*W/(data.length-1),y:top+(1-(d.total-lo)/rg)*(H-top-bottom),d}));
+  let actual='',future='';
+  pts.forEach((q,i)=>{if(i===0)actual=`M ${q.x} ${q.y}`;else{const z=pts[i-1],cx=(z.x+q.x)/2,s=`C ${cx} ${z.y}, ${cx} ${q.y}, ${q.x} ${q.y}`;q.d.forecast?future=`M ${z.x} ${z.y} ${s}`:actual+=' '+s;}});
+  line.setAttribute('d',actual);forecast.setAttribute('d',future);
+  const lastActual=pts.findLast(q=>!q.d.forecast)||pts.at(-1);area.setAttribute('d',actual+` L ${lastActual.x} ${H} L 0 ${H} Z`);
+  const last=pts.at(-1);point.setAttribute('cx',last.x);point.setAttribute('cy',last.y);point.classList.toggle('future',!!last.d.forecast);point.style.opacity='1';
+  renderChartYAxis(lo,hi);
+  const n=Math.min(6,data.length),off=data.length-n;
+  months.innerHTML=data.slice(off).map((d,i)=>`<span class="${d.forecast?'futureLabel':''}" data-index="${off+i}">${formatMonth(d.date)}</span>`).join('');
+  months.style.gridTemplateColumns=`repeat(${n},1fr)`;
+  const fi=data.findIndex(d=>d.forecast),di=fi>0?fi-1:data.length-1,w=document.querySelector('.chart').getBoundingClientRect().width;
+  showSelectedPoint(data,di,lo,hi,w);
+}
+function setupChartInteraction(){
+  const c=document.querySelector('.chart');if(!c||c.dataset.interactive==='true')return;c.dataset.interactive='true';
+  c.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'&&e.button!==0)return;selectOverviewPoint(e.clientX);});
+  c.addEventListener('pointermove',e=>{if(e.pointerType==='mouse'&&e.buttons===0)return;if(e.pointerType!=='mouse')selectOverviewPoint(e.clientX);});
+}
+function setupOverviewRanges(){
+  document.querySelectorAll('#rangeSwitch button').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      overviewRange=btn.dataset.range;
+      document.querySelectorAll('#rangeSwitch button').forEach(b=>b.classList.toggle('selected',b===btn));
+      renderOverviewChart();
+    });
+  });
+}
+
+async function refreshOverviewHistory(){
+  try{
+    overviewHistory=await getTimelineData();
+    renderOverviewChart();
+  }catch(err){
+    console.warn('Overview chart history failed:',err);
+  }
 }
 
 async function getTimelineData(){
@@ -741,7 +1004,7 @@ function renderTimelineData(data){
 function renderAssets(){
   app.innerHTML=`<div style="padding-top:30px">
     <div class="eyebrow">ASSETS</div>
-    <div class="heroValue" style="font-size:42px;text-align:left">$706,359</div>
+    <div class="heroValue" style="font-size:42px;text-align:left">Current Net Worth</div>
     <div class="sub" style="margin-top:4px">Where your net worth lives</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:24px">
       <div style="background:#fff;border:1px solid var(--line);border-radius:18px;padding:15px;min-height:108px">
@@ -775,12 +1038,12 @@ function renderAssets(){
       <div style="display:flex;gap:12px;align-items:center">
         <div style="width:44px;height:44px;border-radius:14px;background:#f1edff;color:#8064d8;display:grid;place-items:center;font-size:21px">◆</div>
         <div style="flex:1"><div class="name">Equity</div><div class="sub">Long term investment · not sellable</div></div>
-        <div class="amt">$272,350</div>
+        <div class="amt">Current</div>
       </div>
       <div class="row" style="margin-top:18px">
         <div style="width:44px;height:44px;border-radius:14px;background:#eef6ff;color:#2f80ed;display:grid;place-items:center;font-size:20px">⌂</div>
         <div style="flex:1;margin-left:12px"><div class="name">Real Estate</div><div class="sub">Property</div></div>
-        <div class="amt">$72,000</div>
+        <div class="amt">Current</div>
       </div>
     </div>
   </div>`;
