@@ -180,32 +180,22 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
 .heroEyebrow{font-size:11px;letter-spacing:.19em;color:#91a0b3;font-weight:700}
 .heroValue{font-size:58px;line-height:1;letter-spacing:-.055em;font-weight:760;margin:12px 0 10px}
 .delta{font-size:14px;color:#1fa66b;font-weight:650}.delta span{color:#9aa6b6;font-weight:500;margin-left:7px}
-.chart{position:relative;height:330px;margin:20px -18px 0;overflow:hidden;touch-action:pan-y}
-.chart svg{position:absolute;left:0;right:0;top:0;width:100%;height:235px}
-.chartArea{fill:url(#chartFill)}
-.chartLine{fill:none;stroke:#3d92f5;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
-.chartForecast{fill:none;stroke:#9fc9f5;stroke-width:2.5;stroke-dasharray:6 6;stroke-linecap:round}
-.chartPoint{fill:#3d92f5;stroke:#fff;stroke-width:3;opacity:0}
-.chartPoint.future{fill:#fff;stroke:#3d92f5;stroke-width:3}
-.chartSelectedHalo{fill:#fff;stroke:#2f80ed;stroke-width:2;opacity:0}
-.chartSelectedCore{fill:#2f80ed;opacity:0}
+.chart{position:relative;height:300px;margin:18px -10px 0;overflow:hidden}
+.chart svg{position:absolute;left:0;right:0;top:0;width:100%;height:235px;overflow:visible}
+.chartLine{fill:none;stroke:#3d92f5;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.chartForecast{fill:none;stroke:#a9cef2;stroke-width:2.5;stroke-dasharray:6 6;stroke-linecap:round}
 .chartYAxis{position:absolute;left:12px;top:28px;height:174px;width:58px;display:flex;flex-direction:column;justify-content:space-between;pointer-events:none;z-index:2}
 .chartYAxis span{font-size:9px;font-weight:650;color:#a0adbd;background:rgba(247,249,252,.72);padding-right:4px}
 .chartGridLine{position:absolute;left:68px;right:0;height:1px;background:#edf1f5;pointer-events:none}
-.chartGuide{position:absolute;top:30px;height:170px;width:1px;background:#a9cff6;opacity:0;pointer-events:none;z-index:3}
-.chartTooltip{position:absolute;top:6px;left:50%;transform:translateX(-50%);background:#172435;color:#fff;padding:8px 12px;border-radius:12px;font-size:12px;font-weight:700;white-space:nowrap;opacity:0;pointer-events:none;z-index:5;box-shadow:0 5px 18px rgba(22,36,53,.16)}
-.chartTooltip strong{font-size:13px}
-.chartTooltip span{display:block;margin:2px 0 0;color:#aebccc;font-size:10px}
 .chartMonths{position:absolute;left:72px;right:8px;top:222px;display:grid;grid-template-columns:repeat(6,1fr);font-size:10px;font-weight:650;letter-spacing:.06em;color:#9aa7b8}
 .chartMonths .selectedMonth{color:#2f80ed;font-weight:800}
 .chartMonths .futureLabel{color:#8ba8c4}
-.chartTapHint{position:absolute;left:0;right:0;bottom:57px;text-align:center;font-size:9px;color:#a9b4c1;opacity:.8;pointer-events:none}
 .rangeSwitch{position:absolute;left:18%;right:18%;bottom:8px;height:48px;padding:4px;display:grid;grid-template-columns:repeat(5,1fr);background:#f0f4f8;border-radius:28px;color:#8996a7;font-size:12px;font-weight:650}
 .rangeSwitch button{appearance:none;border:0;background:transparent;color:#8996a7;font:inherit;cursor:pointer;border-radius:24px}
 .rangeSwitch button.selected{background:#fff;color:#2f80ed;box-shadow:0 2px 10px rgba(40,70,100,.06)}
 
 .summaryGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:2px}
-.metricCard,.panel,.accounts,.illiquid{background:#fff;border:1px solid #e5eaf0;border-radius:22px;box-shadow:0 6px 24px rgba(29,48,72,.035)}
+.metricCard,.panel,.accounts,.illiquid{background:#fff;border:1px solid #e5eaf0;border-radius:22px;box-shadow:0 3px 16px rgba(29,48,72,.025)}
 .metricCard{padding:18px;min-height:142px}
 .cardLabel,.sectionTitle{font-size:11px;letter-spacing:.13em;color:#91a0b3;font-weight:750}
 .metricValue{font-size:28px;letter-spacing:-.045em;font-weight:730;margin-top:18px}
@@ -229,14 +219,14 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
 .account:first-child{border-top:0}.accountIcon{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-size:19px;font-weight:750}
 .ibkrIcon{background:#fff0f0;color:#d71920}.wiseIcon{background:#eaf3ff;color:#2878e5}.nexoIcon{background:#f2edff;color:#8064d8}.bingxIcon{background:#fff4e8;color:#e19a38}.cashIcon{background:#f0f3f6;color:#7d8999}
 .accountName{font-size:14px;font-weight:680}.accountAmount{font-size:15px;font-weight:700;text-align:right}.sub{font-size:10px;color:#9ba7b6;margin-top:4px}.bar{height:4px;background:#edf2f6;border-radius:99px;margin-top:8px;overflow:hidden}.bar i{display:block;height:100%;background:#4b9af5;border-radius:99px}
-.realEstateStandalone{margin-top:12px;background:#fff;border:1px solid #e5eaf0;border-radius:22px;box-shadow:0 6px 24px rgba(29,48,72,.035);padding:18px}.realEstateRow{display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:13px;margin-top:12px}.realEstateIcon{width:48px;height:48px;border-radius:15px;background:#eef6ff;color:#2f80ed;display:grid;place-items:center;font-size:22px}.realEstateName{font-size:14px;font-weight:680}.realEstateMeta{font-size:10px;color:#9aa6b6;margin-top:4px}.realEstateRight{text-align:right}.realEstateValue{font-size:28px;font-weight:780;letter-spacing:-.05em}.realEstatePct{font-size:10px;color:#9aa6b6;margin-top:4px}
+.realEstateStandalone{margin-top:12px;background:#fff;border:1px solid #e5eaf0;border-radius:22px;box-shadow:0 3px 16px rgba(29,48,72,.025);padding:18px}.realEstateRow{display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:13px;margin-top:12px}.realEstateIcon{width:48px;height:48px;border-radius:15px;background:#eef6ff;color:#2f80ed;display:grid;place-items:center;font-size:22px}.realEstateName{font-size:14px;font-weight:680}.realEstateMeta{font-size:10px;color:#9aa6b6;margin-top:4px}.realEstateRight{text-align:right}.realEstateValue{font-size:28px;font-weight:780;letter-spacing:-.05em}.realEstatePct{font-size:10px;color:#9aa6b6;margin-top:4px}
 .illiquid{margin-top:12px;padding:18px}.illiquidItem{display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:10px;align-items:center;padding:14px;background:#faf8ff;border-radius:16px}.assetIcon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:17px}.singleIlliquid{margin-top:12px}.illiquidMain{min-width:0}.equityIcon{background:#f1edff;color:#8064d8}.homeIcon{background:#eef6ff;color:#2f80ed}.name{font-size:12px;font-weight:650}.amt{font-size:13px;font-weight:700}.bottom{width:min(540px,100%);grid-template-columns:1fr 1fr}
 .floatingSwitch{bottom:14px}
 .app{padding-bottom:98px}
 @media(max-width:600px){
   .app{padding:16px 18px 105px}
   .heroValue{font-size:54px}
-  .chart{height:315px}
+  .chart{height:292px}
   .middleGrid{grid-template-columns:1fr 1fr}
   .allocationGrid{grid-template-columns:1fr}
   .allocationLegend{grid-template-columns:1fr}
@@ -254,6 +244,50 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
   .account{grid-template-columns:48px minmax(0,1fr) auto}
   .accountIcon{width:42px;height:42px}
 }
+
+/* Mobile first value layout */
+@media(max-width:600px){
+  .app{width:100%;max-width:520px;padding:14px 14px 105px;overflow-x:hidden}
+  .heroValue{font-size:52px;max-width:100%;white-space:nowrap}
+  .summaryGrid{grid-template-columns:1fr 1fr;gap:8px}
+  .metricCard{min-width:0;padding:14px;border-radius:18px}
+  .metricValue{font-size:23px;white-space:nowrap;letter-spacing:-.055em}
+  .middleGrid{grid-template-columns:1fr;gap:8px}
+  .panel{min-width:0;padding:15px;border-radius:18px}
+  .allocationGrid{grid-template-columns:118px minmax(0,1fr);gap:10px}
+  .donutWrap,.donut{width:108px;height:108px}
+  .donut:after{inset:22px}
+  .allocationLegend{gap:9px}
+  .marketRow{grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:14px 0}
+  .marketValue{font-size:21px;white-space:nowrap}
+  .accounts{padding:15px;border-radius:18px}
+  .account{grid-template-columns:44px minmax(0,1fr);grid-template-rows:auto auto;gap:5px 10px;padding:15px 0}
+  .accountIcon{grid-row:1 / span 2;width:40px;height:40px}
+  .accountMain{min-width:0;grid-column:2;grid-row:1 / span 2;padding-right:82px;position:relative}
+  .accountName{font-size:13px}
+  .accountAmount{position:absolute;right:0;top:0;font-size:14px;white-space:nowrap}
+  .accountMain .bar{margin-top:9px}
+  .sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .realEstateStandalone{padding:15px;border-radius:18px}
+  .realEstateRow{grid-template-columns:42px minmax(0,1fr);gap:10px;align-items:center}
+  .realEstateIcon{width:42px;height:42px}
+  .realEstateRight{grid-column:2;text-align:left;margin-top:2px}
+  .realEstateValue{font-size:27px;white-space:nowrap}
+  .realEstatePct{margin-top:3px}
+  .illiquid{padding:15px;border-radius:18px}
+  .illiquidItem{grid-template-columns:40px minmax(0,1fr);gap:9px;padding:12px}
+  .illiquidItem .amt{grid-column:2;margin-top:2px;font-size:18px;white-space:nowrap}
+  .note{font-size:10px}
+}
+@media(max-width:360px){
+  .app{padding-left:12px;padding-right:12px}
+  .heroValue{font-size:46px}
+  .metricValue{font-size:20px}
+  .allocationGrid{grid-template-columns:104px minmax(0,1fr)}
+  .donutWrap,.donut{width:96px;height:96px}
+  .donut:after{inset:19px}
+  .marketValue{font-size:19px}
+}
 </style>
 
 <link rel="icon" type="image/png" sizes="180x180" href="./icons/icon-180.png">
@@ -269,25 +303,14 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
   <section class="hero">
     <div class="heroEyebrow">LIQUID NET WORTH</div>
     <div class="heroValue loadingValue" id="liquidNW">Loading…</div>
-    <div class="delta">↑ 2.45% <span>vs last month</span></div>
 
     <div class="chart">
       <svg id="overviewChartSvg" viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true">
-        <defs>
-          <linearGradient id="chartFill" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stop-color="#cfe7ff" stop-opacity=".9"/>
-            <stop offset="1" stop-color="#f7fbff" stop-opacity="0"/>
-          </linearGradient>
-        </defs>
-        <path id="chartArea" class="chartArea"></path>
         <path id="chartLine" class="chartLine"></path>
         <path id="chartForecast" class="chartForecast"></path>
-        <circle id="chartPoint" class="chartPoint" cx="1200" cy="135" r="7"></circle>
-        <circle id="chartSelectedHalo" class="chartSelectedHalo" cx="1200" cy="135" r="12"></circle>
-        <circle id="chartSelectedCore" class="chartSelectedCore" cx="1200" cy="135" r="5"></circle>
       </svg>
-      <div class="chartTooltip" id="chartTooltip" aria-live="polite"></div><div class="chartYAxis" id="chartYAxis"></div><div class="chartGuide" id="chartGuide"></div>
-      <div id="chartMonths" class="chartMonths"></div><div class="chartTapHint">Tap the graph to explore</div><div class="chartTapHint">Tap the graph to explore</div>
+      <div class="chartYAxis" id="chartYAxis"></div>
+      <div id="chartMonths" class="chartMonths"></div>
       <div id="rangeSwitch" class="rangeSwitch">
         <button class="selected" data-range="1m">1M</button>
         <button data-range="3m">3M</button>
@@ -301,13 +324,11 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
   <section class="summaryGrid">
     <div class="metricCard">
       <div class="cardLabel">TOTAL NET WORTH</div>
-      <div class="metricValue" id="totalNW">$706,359</div>
-      <div class="smallDelta">↑ 3.12%</div>
+      <div class="metricValue" id="totalNW">Loading…</div>
     </div>
     <div class="metricCard">
       <div class="cardLabel">ACCESSIBLE NW</div>
-      <div class="metricValue" id="accessibleNW">$434,009</div>
-      <div class="smallDelta">↑ 1.85%</div>
+      <div class="metricValue" id="accessibleNW">Loading…</div>
     </div>
   </section>
 
@@ -335,11 +356,11 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
       <div class="marketGrid">
         <div class="marketRow">
           <div class="marketName">$nbsp; Dólar Blue</div>
-          <div><div class="marketValue" id="dollarBlue">$1,550</div><div class="marketDelta">↑ 0.65%</div></div>
+          <div><div class="marketValue" id="dollarBlue">Loading…</div></div>
         </div>
         <div class="marketRow">
           <div class="marketName">₿nbsp; Bitcoin</div>
-          <div><div class="marketValue" id="bitcoin">$77,490</div><div class="marketDelta">↑ 1.32%</div></div>
+          <div><div class="marketValue" id="bitcoin">Loading…</div></div>
         </div>
       </div>
     </div>
@@ -590,6 +611,11 @@ async function refreshOverview(){
   setPct('investmentsPct',investments);
   setPct('realEstatePct',realEstate);
   setPct('cashPct',cash);
+  const donut=document.querySelector('.donut');
+  if(donut && isFinite(total) && total>0){
+    const ip=Math.max(0,investments/total*100), rp=Math.max(0,realEstate/total*100), cp=Math.max(0,cash/total*100);
+    donut.style.background=`conic-gradient(#2f80ed 0 ${ip}%,#82bdf4 ${ip}% ${ip+rp}%,#bda6ef ${ip+rp}% ${ip+rp+cp}%)`;
+  }
 
   // Update the liquid/accessibility account amounts too.
   const accountMap={IBKR:ibkr,Wise:wise,Nexo:nexo,BingX:bingx,Cash:cash};
@@ -674,7 +700,7 @@ function startOverviewRefresh(){
   };
   run().then(()=>refreshOverviewHistory());
   setupOverviewRanges();
-  setupChartInteraction();
+  
   clearInterval(window.__overviewRefresh);
   window.__overviewRefresh=setInterval(run,5000);
 }
@@ -701,44 +727,32 @@ function renderChartYAxis(lo,hi){
   c.querySelectorAll('.chartGridLine').forEach(x=>x.remove());
   for(let i=0;i<5;i++){const l=document.createElement('div');l.className='chartGridLine';l.style.top=(30+170*i/4)+'px';c.appendChild(l);}
 }
-function showSelectedPoint(data,i,lo,hi,w){
-  const d=data[i],x=data.length===1?w/2:i*w/(data.length-1),y=30+(1-(d.total-lo)/(hi-lo))*170;
-  ['chartSelectedHalo','chartSelectedCore'].forEach(id=>{const e=document.getElementById(id);if(e){e.setAttribute('cx',x);e.setAttribute('cy',y);e.style.opacity='1';}});
-  const g=document.getElementById('chartGuide');if(g){g.style.left=x+'px';g.style.opacity='.7';}
-  const t=document.getElementById('chartTooltip');if(t){t.innerHTML=`<strong>${money(d.total)}</strong><span>${d.date.toLocaleDateString('en-US',{month:'short',year:'numeric'})}${d.forecast?' · Current':' · Actual'}</span>`;t.style.left=Math.max(82,Math.min(w-82,x))+'px';t.style.opacity='1';}
-  document.querySelectorAll('#chartMonths span').forEach(e=>e.classList.toggle('selectedMonth',Number(e.dataset.index)===i));
-  const h=document.querySelector('.chartTapHint');if(h)h.style.opacity='0';
-}
-function selectOverviewPoint(clientX){
-  const c=document.querySelector('.chart');if(!c||!overviewHistory.length)return;
-  const r=c.getBoundingClientRect(),data=buildOverviewSeries(),x=Math.max(0,Math.min(r.width,clientX-r.left));
-  const i=Math.max(0,Math.min(data.length-1,Math.round(x/r.width*(data.length-1))));
-  const v=data.map(d=>d.total),min=Math.min(...v),max=Math.max(...v),p=Math.max((max-min)*.18,1000);
-  showSelectedPoint(data,i,min-p,max+p,r.width);
-}
 function renderOverviewChart(){
-  const line=document.getElementById('chartLine'),area=document.getElementById('chartArea'),forecast=document.getElementById('chartForecast'),point=document.getElementById('chartPoint'),months=document.getElementById('chartMonths');
-  if(!line||!area||!forecast||!point||!months||!overviewHistory.length)return;
-  const all=buildOverviewSeries(),data=all.slice(Math.max(0,all.length-getRangeCount(overviewRange)));if(!data.length)return;
-  const W=1200,H=300,top=35,bottom=45,v=data.map(d=>d.total),min=Math.min(...v),max=Math.max(...v),p=Math.max((max-min)*.18,1000),lo=min-p,hi=max+p,rg=hi-lo;
+  const line=document.getElementById('chartLine'),forecast=document.getElementById('chartForecast'),months=document.getElementById('chartMonths');
+  if(!line||!forecast||!months||!overviewHistory.length)return;
+  const all=buildOverviewSeries(),data=all.slice(Math.max(0,all.length-getRangeCount(overviewRange)));
+  if(!data.length)return;
+  const W=1200,H=300,top=35,bottom=45,v=data.map(d=>d.total);
+  const min=Math.min(...v),max=Math.max(...v),p=Math.max((max-min)*.18,1000),lo=min-p,hi=max+p,rg=hi-lo;
   const pts=data.map((d,i)=>({x:data.length===1?W/2:i*W/(data.length-1),y:top+(1-(d.total-lo)/rg)*(H-top-bottom),d}));
   let actual='',future='';
-  pts.forEach((q,i)=>{if(i===0)actual=`M ${q.x} ${q.y}`;else{const z=pts[i-1],cx=(z.x+q.x)/2,s=`C ${cx} ${z.y}, ${cx} ${q.y}, ${q.x} ${q.y}`;q.d.forecast?future=`M ${z.x} ${z.y} ${s}`:actual+=' '+s;}});
-  line.setAttribute('d',actual);forecast.setAttribute('d',future);
-  const lastActual=pts.findLast(q=>!q.d.forecast)||pts.at(-1);area.setAttribute('d',actual+` L ${lastActual.x} ${H} L 0 ${H} Z`);
-  const last=pts.at(-1);point.setAttribute('cx',last.x);point.setAttribute('cy',last.y);point.classList.toggle('future',!!last.d.forecast);point.style.opacity='1';
+  pts.forEach((q,i)=>{
+    if(i===0) actual=`M ${q.x} ${q.y}`;
+    else {
+      const z=pts[i-1],cx=(z.x+q.x)/2,s=`C ${cx} ${z.y}, ${cx} ${q.y}, ${q.x} ${q.y}`;
+      if(q.d.forecast) future=`M ${z.x} ${z.y} ${s}`;
+      else actual+=' '+s;
+    }
+  });
+  line.setAttribute('d',actual);
+  forecast.setAttribute('d',future);
   renderChartYAxis(lo,hi);
   const n=Math.min(6,data.length),off=data.length-n;
-  months.innerHTML=data.slice(off).map((d,i)=>`<span class="${d.forecast?'futureLabel':''}" data-index="${off+i}">${formatMonth(d.date)}</span>`).join('');
+  months.innerHTML=data.slice(off).map((d,i)=>`<span class="${d.forecast?'futureLabel':''}">${formatMonth(d.date)}</span>`).join('');
   months.style.gridTemplateColumns=`repeat(${n},1fr)`;
-  const fi=data.findIndex(d=>d.forecast),di=fi>0?fi-1:data.length-1,w=document.querySelector('.chart').getBoundingClientRect().width;
-  showSelectedPoint(data,di,lo,hi,w);
 }
-function setupChartInteraction(){
-  const c=document.querySelector('.chart');if(!c||c.dataset.interactive==='true')return;c.dataset.interactive='true';
-  c.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'&&e.button!==0)return;selectOverviewPoint(e.clientX);});
-  c.addEventListener('pointermove',e=>{if(e.pointerType==='mouse'&&e.buttons===0)return;if(e.pointerType!=='mouse')selectOverviewPoint(e.clientX);});
-}
+function setupChartInteraction(){}
+
 function setupOverviewRanges(){
   document.querySelectorAll('#rangeSwitch button').forEach(btn=>{
     btn.addEventListener('click',()=>{
