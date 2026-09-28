@@ -36,6 +36,16 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
 .sectionGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
 .section{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}
 .sectionTitle{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#929dad;font-weight:700;margin-bottom:16px}
+
+.assetSplit{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.assetItem{background:#fff;border:1px solid var(--line);border-radius:18px;padding:15px;min-height:108px;box-shadow:0 5px 20px rgba(27,43,66,.035)}
+.assetItemTop{display:flex;align-items:center;gap:8px}
+.assetDot{width:8px;height:8px;border-radius:50%;display:block;flex:none}
+.realEstateDot{background:#2f80ed}
+.cashDot{background:#9aa4b3}
+.assetItemLabel{font-size:11px;color:#8d98a7;font-weight:650}
+.assetItemValue{font-size:20px;letter-spacing:-.035em;margin-top:17px;font-weight:700}
+.assetItemPct{font-size:10px;color:#a0a8b4;margin-top:3px}
 .dist{display:flex;align-items:center;gap:14px}
 .donut{width:88px;height:88px;border-radius:50%;background:conic-gradient(#2f80ed 0 78%,#8dc5f8 78% 95%,#d7e9fb 95% 100%);position:relative;flex:none}
 .donut:after{content:"";position:absolute;inset:22px;background:#fff;border-radius:50%}
@@ -208,7 +218,24 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
     <div class="card"><div class="label">Total Net Worth</div><div class="value" id="totalNW">$706,359</div><div class="smallDelta">↑ 3.12%</div></div>
     <div class="card"><div class="label">Accessible NW</div><div class="value" id="accessibleNW">$434,009</div><div class="smallDelta">↑ 1.85%</div></div>
     
-    <div>● <b>Real Estate</b> 17%</div><div>● <b>Cash</b> 5%</div></div></div></div>
+    <div class="assetSplit">
+      <div class="assetItem">
+        <div class="assetItemTop">
+          <span class="assetDot realEstateDot"></span>
+          <span class="assetItemLabel">Real Estate</span>
+        </div>
+        <div class="assetItemValue" id="realEstate">$72,000</div>
+        <div class="assetItemPct">17%</div>
+      </div>
+      <div class="assetItem">
+        <div class="assetItemTop">
+          <span class="assetDot cashDot"></span>
+          <span class="assetItemLabel">Cash</span>
+        </div>
+        <div class="assetItemValue" id="cashNW">$9,600</div>
+        <div class="assetItemPct">5%</div>
+      </div>
+    </div>
     <div class="section"><div class="sectionTitle">Market</div>
       <div class="marketRow"><div class="marketName">＄ Dólar Blue</div><div><div class="marketValue" id="dollarBlue">$1,550</div><div class="marketDelta">↑ 0.65%</div></div></div>
       <div class="marketRow"><div class="marketName">₿ Bitcoin</div><div><div class="marketValue" id="bitcoin">$77,490</div><div class="marketDelta">↑ 1.32%</div></div></div>
@@ -378,6 +405,7 @@ async function refreshOverview(){
   set('bitcoin',bitcoin);
   set('equity',equity);
   set('realEstate',realEstate);
+  set('cashNW',cash);
   set('investmentsNW',investments);
   set('waterNW',liquid);
 
