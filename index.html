@@ -84,36 +84,85 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
   .historyMonth .monthFill{width:38px}
 }
 
+
+/* Refreshed timeline UX */
+.timelineHeader{text-align:center;margin-top:10px}
+.timelineHeader .eyebrow{margin-bottom:8px}
+.timelineCurrent{font-size:46px;line-height:1;letter-spacing:-.055em;font-weight:720}
+.timelineMeta{font-size:11px;color:#8d98a7;margin-top:7px}
+.timelineDelta{margin-top:10px}
+
+.timelineScroller{margin-top:28px;overflow-x:auto;overflow-y:hidden;padding:0 0 8px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.timelineScroller::-webkit-scrollbar{display:none}
+.timelineTrack{display:flex;align-items:flex-end;gap:10px;height:305px;width:max-content;padding:0 calc(50vw - 28px)}
+.historyMonth{
+  position:relative;width:56px;min-width:56px;height:292px;padding:0;border:0;background:none;
+  display:flex;flex-direction:column;justify-content:flex-end;align-items:center;
+  font:inherit;cursor:pointer;border-radius:14px;
+}
+.historyMonth:focus-visible{outline:2px solid #2f80ed;outline-offset:3px}
+.historyMonth .monthValue{
+  min-height:18px;font-size:9px;font-weight:650;color:#8a9aac;white-space:nowrap;
+  margin-bottom:8px;opacity:0;transform:translateY(4px);transition:opacity .16s,transform .16s,color .16s;
+}
+.historyMonth .monthFill{
+  display:block;width:38px;background:#e7edf3;border-radius:9px 9px 5px 5px;
+  transition:height .18s,background .18s,box-shadow .18s,transform .18s;
+}
+.historyMonth.active .monthFill{
+  background:#cfe6fb;
+  box-shadow:0 5px 14px rgba(47,128,237,.08);
+}
+.historyMonth.selected .monthFill{
+  background:linear-gradient(180deg,#2f80ed,#68aef0);
+  box-shadow:0 8px 18px rgba(47,128,237,.20);
+  transform:translateY(-1px);
+}
+.historyMonth.selected .monthValue{
+  opacity:1;transform:none;color:#2f80ed;font-size:10px;
+}
+.historyMonth .monthLabel{
+  font-size:9px;font-weight:650;color:#98a4b1;margin-top:9px;white-space:nowrap;
+}
+.historyMonth.active .monthLabel{color:#5d89b4}
+.historyMonth.selected .monthLabel{color:#2f80ed;font-weight:750}
+.timelineHint{
+  display:flex;justify-content:center;align-items:center;gap:6px;
+  font-size:10px;color:#a0a9b5;margin-top:3px;
+}
+.timelineLegend{display:flex;justify-content:center;gap:14px;margin-top:12px;font-size:10px;color:#8d98a7}
+.timelineLegend span{display:inline-flex;align-items:center;gap:5px}
+.timelineLegend i{width:8px;height:8px;border-radius:3px;display:inline-block}
+.timelineLegend .currentDot{background:#cfe6fb}
+.timelineLegend .selectedDot{background:#2f80ed}
+
+.floatingSwitch{
+  position:fixed;left:50%;bottom:16px;transform:translateX(-50%);
+  width:min(250px,calc(100% - 36px));padding:4px;
+  display:grid;grid-template-columns:1fr 1fr;gap:3px;
+  background:rgba(255,255,255,.88);border:1px solid rgba(220,226,234,.95);
+  border-radius:999px;box-shadow:0 10px 30px rgba(27,43,66,.12);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);z-index:30;
+}
+.floatingSwitch .nav{
+  min-height:38px;padding:0 14px;border-radius:999px;font-size:11px;font-weight:650;
+  color:#8b95a3;background:transparent;
+}
+.floatingSwitch .nav.active{color:#2f80ed;background:#eaf4ff}
+.floatingSwitch .nav:hover{background:#f4f7fa}
+.floatingSwitch .nav.active:hover{background:#eaf4ff}
+.app{padding-bottom:90px}
+
+.loadingValue{color:#b4bdc9;font-size:42px!important;letter-spacing:-.04em}
+@media(max-width:600px){
+  .timelineTrack{padding-left:calc(50vw - 28px);padding-right:calc(50vw - 28px)}
+}
+
 /* Consistent growth indicator */
 .growthPill{display:inline-flex;align-items:center;gap:4px;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:-.01em;line-height:1}
 .growthPill.up{background:#edf8f2;color:#2f9b68}
 .growthPill.down{background:#fff0f0;color:#d15f5f}
 .growthPill.flat{background:#f1f4f7;color:#7f8b98}
-
-.sectionHeading{margin:22px 2px 10px;font-size:11px;letter-spacing:.14em;color:#929dad;font-weight:700}
-.allocation{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:18px;box-shadow:0 5px 20px rgba(27,43,66,.025)}
-.allocationItem{display:flex;align-items:center;gap:11px;min-width:0}
-.allocIcon{width:43px;height:43px;border-radius:50%;display:grid;place-items:center;flex:none;font-weight:800;font-size:20px}
-.houseIcon{background:#eaf4ff;color:#2f80ed}
-.cashIcon{background:#e9f8f1;color:#20a36a}
-.allocInfo{min-width:0;flex:1}
-.allocName{font-size:12px;color:#667386;white-space:nowrap}
-.allocPct{font-size:19px;font-weight:750;letter-spacing:-.03em;margin-top:2px}
-.allocBar{height:5px;background:#eef1f5;border-radius:10px;margin-top:7px;overflow:hidden}
-.allocBar i{display:block;height:100%;border-radius:10px;background:#6eb0ee}
-.allocationItem:nth-child(2) .allocBar i{background:#45b87f}
-.marketCard{margin-top:10px}
-.marketLeft{display:flex;align-items:center;gap:10px}
-.marketIcon{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:750;font-size:17px}
-.dollarIcon{background:#eaf4ff;color:#2f80ed}
-.bitcoinIcon{background:#fff0df;color:#f28a00}
-.marketName{font-size:13px;color:#4f5969}
-.growthPill span{color:#8f99a8;font-weight:500;margin-left:2px}
-@media(max-width:600px){
-  .allocation{gap:12px;padding:15px 12px}
-  .allocationItem{gap:9px}
-  .allocIcon{width:39px;height:39px}
-}
 </style>
 
 <link rel="icon" type="image/png" sizes="180x180" href="./icons/icon-180.png">
@@ -123,11 +172,12 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
 </head>
 <body>
 <main class="app">
+  <div id="viewTitle" style="display:none"></div>
   <div class="top"><div class="brand"></div></div>
 
   <section class="hero">
     <div class="eyebrow">LIQUID NET WORTH</div>
-    <div class="heroValue" id="liquidNW">$362,009</div>
+    <div class="heroValue loadingValue" id="liquidNW">Loading…</div>
     <div class="delta">↑ 2.45% <span>vs last month</span></div>
     <div class="water">
       <svg viewBox="0 0 1200 220" preserveAspectRatio="none" aria-hidden="true">
@@ -149,63 +199,29 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
                     M0 103 C120 88 190 126 300 108 C420 89 500 88 610 106 C720 124 805 91 930 105 C1040 118 1090 98 1200 110"/>
         </path>
       </svg>
-      <div class="waterLabel" id="waterNW">$362K</div>
-      <div class="waterCaption">51% LIQUID</div>
+      <div class="waterLabel" id="waterNW">Loading…</div>
+      <div class="waterCaption">LIQUIDITY IS FREEDOM</div>
     </div>
   </section>
 
   <section class="cards">
-    <div class="card">
-      <div class="label">Total Net Worth</div>
-      <div class="value" id="totalNW">$706,359</div>
-      <div class="growthPill up" id="totalGrowth">↑ 3.12% <span>vs last month</span></div>
-    </div>
-    <div class="card">
-      <div class="label">Accessible Net Worth</div>
-      <div class="value" id="accessibleNW">$434,009</div>
-      <div class="growthPill up" id="accessibleGrowth">↑ 1.85% <span>vs last month</span></div>
-    </div>
-  </section>
-
-  <div class="sectionHeading">ASSET ALLOCATION</div>
-  <section class="allocation">
-    <div class="allocationItem">
-      <div class="allocIcon houseIcon">⌂</div>
-      <div class="allocInfo">
-        <div class="allocName">Real Estate</div>
-        <div class="allocPct" id="realEstatePct">17%</div>
-        <div class="allocBar"><i id="realEstateBar"></i></div>
-      </div>
-    </div>
-    <div class="allocationItem">
-      <div class="allocIcon cashIcon">$</div>
-      <div class="allocInfo">
-        <div class="allocName">Cash</div>
-        <div class="allocPct" id="cashPct">5%</div>
-        <div class="allocBar"><i id="cashBar"></i></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section marketCard">
-    <div class="sectionTitle">Market</div>
-    <div class="marketRow">
-      <div class="marketLeft"><span class="marketIcon dollarIcon">$</span><div class="marketName">Dólar Blue</div></div>
-      <div><div class="marketValue" id="dollarBlue">$1,550</div><div class="marketDelta">↑ 0.65%</div></div>
-    </div>
-    <div class="marketRow">
-      <div class="marketLeft"><span class="marketIcon bitcoinIcon">₿</span><div class="marketName">Bitcoin</div></div>
-      <div><div class="marketValue" id="bitcoin">$77,490</div><div class="marketDelta">↑ 1.32%</div></div>
+    <div class="card"><div class="label">Total Net Worth</div><div class="value" id="totalNW">$706,359</div><div class="smallDelta">↑ 3.12%</div></div>
+    <div class="card"><div class="label">Accessible NW</div><div class="value" id="accessibleNW">$434,009</div><div class="smallDelta">↑ 1.85%</div></div>
+    
+    <div>● <b>Real Estate</b> 17%</div><div>● <b>Cash</b> 5%</div></div></div></div>
+    <div class="section"><div class="sectionTitle">Market</div>
+      <div class="marketRow"><div class="marketName">＄ Dólar Blue</div><div><div class="marketValue" id="dollarBlue">$1,550</div><div class="marketDelta">↑ 0.65%</div></div></div>
+      <div class="marketRow"><div class="marketName">₿ Bitcoin</div><div><div class="marketValue" id="bitcoin">$77,490</div><div class="marketDelta">↑ 1.32%</div></div></div>
     </div>
   </section>
 
   <section class="accounts">
     <div class="sectionTitle">Liquid & Accessible</div>
-    <div class="account"><div class="row"><div class="name">IBKR</div><div class="amt">$339,913</div></div><div class="sub">93.9% of liquid</div><div class="bar"><i style="width:94%"></i></div></div>
-    <div class="account"><div class="row"><div class="name">Wise</div><div class="amt">$9,700</div></div><div class="sub">2.7% of liquid</div><div class="bar"><i style="width:3%"></i></div></div>
-    <div class="account"><div class="row"><div class="name">Nexo</div><div class="amt">$2,296</div></div><div class="sub">0.6% of liquid</div><div class="bar"><i style="width:1%"></i></div></div>
-    <div class="account"><div class="row"><div class="name">BingX</div><div class="amt">$500</div></div><div class="sub">0.1% of liquid</div><div class="bar"><i style="width:1%"></i></div></div>
-    <div class="account"><div class="row"><div class="name">Cash</div><div class="amt">$9,600</div></div><div class="sub">2.7% of liquid</div><div class="bar"><i style="width:3%"></i></div></div>
+    <div class="account"><div class="row"><div class="name">IBKR</div><div class="amt">$339,913</div></div><div class="sub">82.9% of liquid & accessible</div><div class="bar"><i style="width:83%"></i></div></div>
+    <div class="account"><div class="row"><div class="name">Wise</div><div class="amt">$9,700</div></div><div class="bar"><i style="width:8%"></i></div></div>
+    <div class="account"><div class="row"><div class="name">Nexo</div><div class="amt">$2,296</div></div><div class="bar"><i style="width:3%"></i></div></div>
+    <div class="account"><div class="row"><div class="name">BingX</div><div class="amt">$500</div></div><div class="bar"><i style="width:2%"></i></div></div>
+    <div class="account"><div class="row"><div class="name">Cash</div><div class="amt">$9,600</div></div><div class="bar"><i style="width:8%"></i></div></div>
   </section>
 
   <section class="illiquid">
@@ -215,15 +231,12 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
     <div class="note">This asset is not liquid and is excluded from Liquid Net Worth.</div>
   </section>
 </main>
-<nav class="bottom" aria-label="Main navigation">
+<nav class="floatingSwitch" aria-label="Main navigation">
   <button class="nav active" data-view="overview" aria-label="Overview">
-    <span class="nicon"><svg viewBox="0 0 24 24" width="27" height="27" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m3.5 10.7 8.5-7 8.5 7"/><path d="M5.5 9.5v10h13v-10"/><path d="M9.5 19.5v-5h5v5"/></svg></span>Overview
+    Overview
   </button>
   <button class="nav" data-view="timeline" aria-label="Timeline">
-    <span class="nicon"><svg viewBox="0 0 24 24" width="27" height="27" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 18V6"/><path d="M4 18h16"/><path d="m6.5 15 4-4 3 2 5-6"/></svg></span>Timeline
-  </button>
-  <button class="nav" data-view="assets" aria-label="Assets">
-    <span class="nicon"><svg viewBox="0 0 24 24" width="27" height="27" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v8.5h8.5"/></svg></span>Assets
+    Timeline
   </button>
 </nav>
 <script>
@@ -314,7 +327,7 @@ function findColumn(headers, patterns){
 }
 
 async function getMainSheetData(){
-  const url = SHEET_API + '?gid=0&_=' + Date.now();
+  const url = SHEET_API + '?gid=0';
   const res = await fetch(url,{cache:'no-store'});
   if(!res.ok) throw new Error('Google Sheets endpoint unavailable');
   const payload=await res.json();
@@ -333,10 +346,8 @@ async function refreshOverview(){
   // row 8 = account labels, row 9 = account values
   const quoteLabels=rows[2] || [];
   const quoteValues=rows[3] || [];
-  const distributionLabels=rows[8] || [];
-  const distributionValues=rows[9] || [];
-  const accountLabels=distributionLabels.slice(4);
-  const accountValues=distributionValues.slice(4);
+  const accountLabels=rows[8] || [];
+  const accountValues=rows[9] || [];
 
   const getByLabel=(labels,values,label)=>{
     const i=labels.findIndex(x=>String(x).trim().toLowerCase()===label.toLowerCase());
@@ -357,9 +368,6 @@ async function refreshOverview(){
   const equity=getByLabel(accountLabels,accountValues,'Equity');
   const realEstate=getByLabel(accountLabels,accountValues,'Real Estate');
 
-  const distributionCash=getByLabel(distributionLabels.slice(0,3),distributionValues.slice(0,3),'Cash');
-  const distributionRealEstate=getByLabel(distributionLabels.slice(0,3),distributionValues.slice(0,3),'Real Estate');
-
   const investments=total-realEstate-equity;
   const set=(id,n)=>{const el=document.getElementById(id); if(el && isFinite(n)) el.textContent=money(n)};
 
@@ -372,19 +380,6 @@ async function refreshOverview(){
   set('realEstate',realEstate);
   set('investmentsNW',investments);
   set('waterNW',liquid);
-
-  const setPct=(id,n)=>{
-    const el=document.getElementById(id);
-    if(el && isFinite(n)) el.textContent=`${n.toFixed(0)}%`;
-  };
-  const setBar=(id,n)=>{
-    const el=document.getElementById(id);
-    if(el && isFinite(n)) el.style.width=`${Math.max(0,Math.min(100,n))}%`;
-  };
-  setPct('realEstatePct',distributionRealEstate);
-  setPct('cashPct',distributionCash);
-  setBar('realEstateBar',distributionRealEstate);
-  setBar('cashBar',distributionCash);
 
   // Update the liquid/accessibility account amounts too.
   const accountMap={IBKR:ibkr,Wise:wise,Nexo:nexo,BingX:bingx,Cash:cash};
@@ -453,20 +448,23 @@ function updateAccountBars(){
 }
 
 function startOverviewRefresh(){
-  const run=()=>refreshOverview().catch(err=>{
-    console.warn('Google Sheets refresh failed:',err);
-  });
+  let refreshing=false;
+  const run=async()=>{
+    if(refreshing) return;
+    refreshing=true;
+    try{
+      await refreshOverview();
+      document.getElementById('liquidNW')?.classList.remove('loadingValue');
+      document.getElementById('waterNW')?.classList.remove('loadingValue');
+    }catch(err){
+      console.warn('Google Sheets refresh failed:',err);
+    }finally{
+      refreshing=false;
+    }
+  };
   run();
   clearInterval(window.__overviewRefresh);
-  window.__overviewRefresh=setInterval(run,15000);
-  window.removeEventListener('focus', window.__sheetRefresh);
-  window.removeEventListener('pageshow', window.__sheetRefresh);
-  window.removeEventListener('visibilitychange', window.__sheetVisibilityRefresh);
-  window.__sheetRefresh=()=>run();
-  window.__sheetVisibilityRefresh=()=>{if(document.visibilityState==='visible') run();};
-  window.addEventListener('focus', window.__sheetRefresh);
-  window.addEventListener('pageshow', window.__sheetRefresh);
-  document.addEventListener('visibilitychange', window.__sheetVisibilityRefresh);
+  window.__overviewRefresh=setInterval(run,5000);
 }
 
 async function getTimelineData(){
@@ -585,111 +583,131 @@ function timelineSVG(data){
 
 async function renderTimeline(){
   app.innerHTML=`<div style="padding-top:30px">
-    <div class="eyebrow">TIMELINE</div>
-
-    <div style="text-align:center;margin-top:8px">
-      <div id="timelineMonth" style="font-size:11px;font-weight:700;color:#8d98a7;letter-spacing:.08em">CURRENT MONTH</div>
-      <div id="timelineCurrent" class="heroValue" style="font-size:46px;margin-top:2px">—</div>
-      <div id="timelineDelta" class="growthPill up">Loading…</div>
+    <div class="timelineHeader">
+      <div class="eyebrow">NET WORTH TIMELINE</div>
+      <div id="timelineMonth" class="timelineMeta">Loading history…</div>
+      <div id="timelineCurrent" class="timelineCurrent">—</div>
+      <div id="timelineDelta" class="growthPill up timelineDelta">Loading…</div>
     </div>
 
-    <div id="monthScroller" style="margin-top:24px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;touch-action:pan-x">
-      <div id="monthChart" style="display:flex;align-items:flex-end;gap:9px;height:300px;width:max-content;padding:0 18px"></div>
+    <div id="monthScroller" class="timelineScroller">
+      <div id="monthChart" class="timelineTrack"></div>
     </div>
-    <div style="display:flex;justify-content:center;gap:6px;align-items:center;font-size:10px;color:#9aa5b2;margin-top:2px">
-      <span>←</span><span>Swipe through history</span><span>→</span>
+
+    <div class="timelineHint">
+      <span>←</span><span>Swipe to explore history</span><span>→</span>
+    </div>
+    <div class="timelineLegend">
+      <span><i class="currentDot"></i>Current month</span>
+      <span><i class="selectedDot"></i>Selected</span>
     </div>
   </div>`;
 
   try{
     const data=await getTimelineData();
-    const latest=data.at(-1);
-    const previous=data.at(-2);
-    const current=latest?.total||0;
-    const delta=previous?current-previous.total:0;
-
-    const monthLabel=latest?.date.toLocaleDateString('en-US',{month:'long',year:'numeric'})||'Current';
-    document.getElementById('timelineMonth').textContent=monthLabel;
-    document.getElementById('timelineCurrent').textContent=money(current);
-    const pct=previous&&previous.total?((current-previous.total)/previous.total)*100:0;
-    const deltaEl=document.getElementById('timelineDelta');
-    deltaEl.textContent=`${pct>=0?'↑':'↓'} ${Math.abs(pct).toFixed(2)}% vs last month`;
-    deltaEl.className=`growthPill ${pct>0?'up':pct<0?'down':'flat'}`;
-
-    const max=Math.max(...data.map(d=>d.total),500000);
-    const chart=document.getElementById('monthChart');
-
-    chart.innerHTML=data.map((d,i)=>{
-      const height=Math.max(24,Math.round((d.total/max)*225));
-      const active=i===data.length-1;
-      const label=d.date.toLocaleDateString('en-US',{month:'short',year:'2-digit'}).replace(' ',' ');
-      return `<button class="historyMonth" type="button" data-index="${i}" aria-label="${label}, ${money(d.total)}"
-        style="width:56px;min-width:56px;height:285px;padding:0;border:0;background:none;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;font:inherit">
-        <span class="monthValue">${money(d.total)}</span>
-        <span class="monthFill ${active?'active':''}" style="height:${height}px"></span>
-        <span class="monthLabel">${label}</span>
-      </button>`;
-    }).join('');
-
-    const buttons=[...chart.querySelectorAll('.historyMonth')];
-
-    let selected=data.length-1;
-    let zoom=1;
-
-    const selectMonth=(i,scroll=true)=>{
-      selected=Math.max(0,Math.min(data.length-1,i));
-      buttons.forEach((b,n)=>b.classList.toggle('selected',n===selected));
-      const row=data[selected];
-      const prev=data[selected-1];
-      const diff=prev?row.total-prev.total:0;
-      document.getElementById('timelineMonth').textContent=row.date.toLocaleDateString('en-US',{month:'long',year:'numeric'});
-      document.getElementById('timelineCurrent').textContent=money(row.total);
-      const pct=prev&&prev.total?((row.total-prev.total)/prev.total)*100:0;
-      const deltaEl=document.getElementById('timelineDelta');
-      deltaEl.textContent=prev?`${pct>=0?'↑':'↓'} ${Math.abs(pct).toFixed(2)}% vs last month`:'';
-      deltaEl.style.background=pct>=0?'#edf8f2':'#fff0f0';
-      deltaEl.style.color=pct>=0?'#2f9b68':'#d15f5f';
-      if(scroll) buttons[selected]?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
-    };
-
-    buttons.forEach((b,i)=>b.addEventListener('click',()=>selectMonth(i)));
-
-    // Pinch zoom changes the density of the bar chart, without interfering
-    // with normal horizontal swipe scrolling.
-    const scroller=document.getElementById('monthScroller');
-    let pinchStart=0, baseZoom=1;
-    scroller.addEventListener('touchstart',e=>{
-      if(e.touches.length===2){
-        pinchStart=Math.hypot(
-          e.touches[0].clientX-e.touches[1].clientX,
-          e.touches[0].clientY-e.touches[1].clientY
-        );
-        baseZoom=zoom;
-      }
-    },{passive:true});
-    scroller.addEventListener('touchmove',e=>{
-      if(e.touches.length===2 && pinchStart){
-        const distance=Math.hypot(
-          e.touches[0].clientX-e.touches[1].clientX,
-          e.touches[0].clientY-e.touches[1].clientY
-        );
-        zoom=Math.max(.75,Math.min(1.8,baseZoom*(distance/pinchStart)));
-        const scale=zoom;
-        chart.style.gap=`${Math.round(9*scale)}px`;
-        buttons.forEach(b=>{
-          b.style.width=`${Math.round(56*scale)}px`;
-          b.style.minWidth=`${Math.round(56*scale)}px`;
-        });
-      }
-    },{passive:true});
-    scroller.addEventListener('touchend',()=>{pinchStart=0},{passive:true});
-
-    selectMonth(selected,false);
-    requestAnimationFrame(()=>buttons.at(-1)?.scrollIntoView({behavior:'instant',block:'nearest',inline:'center'}));
+    window.__timelineData=data;
+    renderTimelineData(data);
   }catch(e){
     document.getElementById('monthChart').innerHTML='<div style="padding:90px 20px;text-align:center;color:#8d98a7">Could not load Race to 500k</div>';
     console.error(e);
   }
+}
+
+function renderTimelineData(data){
+  if(!data || !data.length) return;
+
+  const latest=data.at(-1);
+  const max=Math.max(...data.map(d=>d.total),500000);
+  const chart=document.getElementById('monthChart');
+  if(!chart) return;
+
+  const currentIndex=data.length-1;
+  const previous=data[currentIndex-1];
+  const current=latest.total;
+  const pct=previous&&previous.total?((current-previous.total)/previous.total)*100:0;
+
+  document.getElementById('timelineMonth').textContent=
+    latest.date.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  document.getElementById('timelineCurrent').textContent=money(current);
+
+  const deltaEl=document.getElementById('timelineDelta');
+  deltaEl.textContent=previous?`${pct>=0?'↑':'↓'} ${Math.abs(pct).toFixed(2)}% vs last month`:'';
+  deltaEl.className=`growthPill timelineDelta ${pct>0?'up':pct<0?'down':'flat'}`;
+
+  chart.innerHTML=data.map((d,i)=>{
+    const height=Math.max(24,Math.round((d.total/max)*225));
+    const active=i===currentIndex;
+    const label=d.date.toLocaleDateString('en-US',{month:'short',year:'2-digit'});
+    return `<button class="historyMonth ${active?'active':''}" type="button" data-index="${i}"
+      aria-label="${label}, ${money(d.total)}"
+      aria-pressed="${active?'true':'false'}">
+      <span class="monthValue">${money(d.total)}</span>
+      <span class="monthFill" style="height:${height}px"></span>
+      <span class="monthLabel">${label}</span>
+    </button>`;
+  }).join('');
+
+  const buttons=[...chart.querySelectorAll('.historyMonth')];
+  let selected=currentIndex;
+  let zoom=1;
+
+  const selectMonth=(i,scroll=true)=>{
+    selected=Math.max(0,Math.min(data.length-1,i));
+    buttons.forEach((b,n)=>{
+      b.classList.toggle('selected',n===selected);
+      b.setAttribute('aria-pressed',n===selected?'true':'false');
+    });
+
+    const row=data[selected];
+    const prev=data[selected-1];
+    const pct=prev&&prev.total?((row.total-prev.total)/prev.total)*100:0;
+
+    document.getElementById('timelineMonth').textContent=
+      row.date.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+    document.getElementById('timelineCurrent').textContent=money(row.total);
+
+    const deltaEl=document.getElementById('timelineDelta');
+    deltaEl.textContent=prev?`${pct>=0?'↑':'↓'} ${Math.abs(pct).toFixed(2)}% vs last month`:'';
+    deltaEl.className=`growthPill timelineDelta ${pct>0?'up':pct<0?'down':'flat'}`;
+
+    if(scroll) buttons[selected]?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  };
+
+  buttons.forEach((b,i)=>b.addEventListener('click',()=>selectMonth(i)));
+
+  const scroller=document.getElementById('monthScroller');
+  let pinchStart=0, baseZoom=1;
+
+  scroller.addEventListener('touchstart',e=>{
+    if(e.touches.length===2){
+      pinchStart=Math.hypot(
+        e.touches[0].clientX-e.touches[1].clientX,
+        e.touches[0].clientY-e.touches[1].clientY
+      );
+      baseZoom=zoom;
+    }
+  },{passive:true});
+
+  scroller.addEventListener('touchmove',e=>{
+    if(e.touches.length===2 && pinchStart){
+      const distance=Math.hypot(
+        e.touches[0].clientX-e.touches[1].clientX,
+        e.touches[0].clientY-e.touches[1].clientY
+      );
+      zoom=Math.max(.75,Math.min(1.8,baseZoom*(distance/pinchStart)));
+      const scale=zoom;
+      chart.style.gap=`${Math.round(10*scale)}px`;
+      buttons.forEach(b=>{
+        b.style.width=`${Math.round(56*scale)}px`;
+        b.style.minWidth=`${Math.round(56*scale)}px`;
+      });
+    }
+  },{passive:true});
+
+  scroller.addEventListener('touchend',()=>{pinchStart=0},{passive:true});
+
+  selectMonth(selected,false);
+  requestAnimationFrame(()=>buttons.at(-1)?.scrollIntoView({behavior:'instant',block:'nearest',inline:'center'}));
 }
 
 function renderAssets(){
@@ -743,10 +761,31 @@ function renderAssets(){
 navs.forEach(btn=>btn.addEventListener('click',async()=>{
   navs.forEach(x=>x.classList.remove('active')); btn.classList.add('active');
   const v=btn.dataset.view;
-  if(v==='overview') app.innerHTML=overviewHTML;
+  if(v==='overview'){
+    app.innerHTML=overviewHTML;
+    const liquid=document.getElementById('liquidNW');
+    const water=document.getElementById('waterNW');
+    if(liquid) liquid.textContent='Loading…';
+    if(water) water.textContent='Loading…';
+    if(liquid) liquid.classList.add('loadingValue');
+    if(water) water.classList.add('loadingValue');
+    refreshOverview().catch(err=>console.warn('Google Sheets refresh failed:',err));
+  }
   if(v==='timeline') await renderTimeline();
-  if(v==='assets') renderAssets();
 }));
+
+window.__timelineRefresh=setInterval(async()=>{
+  const timelineActive=document.querySelector('.nav.active')?.dataset.view==='timeline';
+  if(!timelineActive) return;
+  try{
+    const data=await getTimelineData();
+    window.__timelineData=data;
+    renderTimelineData(data);
+  }catch(err){
+    console.warn('Timeline refresh failed:',err);
+  }
+},5000);
+
 startOverviewRefresh();
 </script>
 </body>
