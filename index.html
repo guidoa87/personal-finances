@@ -89,6 +89,10 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
 .growthPill.up{background:#edf8f2;color:#2f9b68}
 .growthPill.down{background:#fff0f0;color:#d15f5f}
 .growthPill.flat{background:#f1f4f7;color:#7f8b98}
+.loadingValue{display:inline-block;min-width:90px;height:1em;border-radius:8px;background:linear-gradient(90deg,#edf1f5 25%,#f7f9fb 50%,#edf1f5 75%);background-size:200% 100%;animation:skeleton 1.05s ease-in-out infinite;color:transparent!important}
+.heroValue.loadingValue{min-width:230px;height:52px;border-radius:14px;margin-left:auto;margin-right:auto}
+.waterCaption.loadingValue{min-width:92px;height:29px;border-radius:999px}
+@keyframes skeleton{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
 .sectionHeading{margin:22px 2px 10px;font-size:11px;letter-spacing:.14em;color:#929dad;font-weight:700}
 .allocation{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:18px;box-shadow:0 5px 20px rgba(27,43,66,.025)}
@@ -117,6 +121,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
 .hero{padding-top:22px}.eyebrow{font-size:10px;letter-spacing:.16em}.heroValue{font-size:56px;font-weight:740}.water{height:190px;margin-top:10px}.waterCaption{bottom:18px;left:50%;right:auto;transform:translateX(-50%);font-size:15px;font-weight:800;letter-spacing:-.02em;color:#1f72d0;background:rgba(255,255,255,.88);padding:7px 12px;border:1px solid #d9eafa;border-radius:999px;box-shadow:0 6px 18px rgba(47,128,237,.10)}.cards{margin-top:4px}.card,.section,.accounts,.illiquid,.allocation{box-shadow:0 8px 28px rgba(27,43,66,.045)}@media(max-width:600px){.app{padding-left:16px;padding-right:16px}.bottom{bottom:12px}.nav{padding-left:24px;padding-right:24px}.heroValue{font-size:52px}}
 </style>
 
+<link rel="preconnect" href="https://script.google.com" crossorigin>
+<link rel="dns-prefetch" href="//script.google.com">
 <link rel="icon" type="image/png" sizes="180x180" href="./icons/icon-180.png">
 <link rel="apple-touch-icon" href="./icons/icon-180.png">
 <link rel="manifest" href="./manifest.json">
@@ -128,7 +134,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
 
   <section class="hero">
     <div class="eyebrow">LIQUID NET WORTH</div>
-    <div class="heroValue" id="liquidNW">$362,009</div>
+    <div class="heroValue loadingValue" id="liquidNW" aria-label="Loading"></div>
     <div class="delta">↑ 2.45% <span>vs last month</span></div>
     <div class="water">
       <svg viewBox="0 0 1200 220" preserveAspectRatio="none" aria-hidden="true">
@@ -150,19 +156,19 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
                     M0 103 C120 88 190 126 300 108 C420 89 500 88 610 106 C720 124 805 91 930 105 C1040 118 1090 98 1200 110"/>
         </path>
       </svg>
-      <div class="waterCaption">51.2% LIQUID</div>
+      <div class="waterCaption loadingValue" id="liquidCaption" aria-label="Loading"></div>
     </div>
   </section>
 
   <section class="cards">
     <div class="card">
       <div class="label">Total Net Worth</div>
-      <div class="value" id="totalNW">$706,359</div>
+      <div class="value loadingValue" id="totalNW" aria-label="Loading"></div>
       <div class="growthPill up" id="totalGrowth">↑ 3.12% <span>vs last month</span></div>
     </div>
     <div class="card">
       <div class="label">Accessible Net Worth</div>
-      <div class="value" id="accessibleNW">$434,009</div>
+      <div class="value loadingValue" id="accessibleNW" aria-label="Loading"></div>
       <div class="growthPill up" id="accessibleGrowth">↑ 1.85% <span>vs last month</span></div>
     </div>
   </section>
@@ -347,6 +353,9 @@ async function refreshOverview(){
   const dollar=getByLabel(quoteLabels,quoteValues,'Dolar Blue');
   const bitcoin=getByLabel(quoteLabels,quoteValues,'Bitcoin');
 
+  // Keep the latest successful sheet payload locally so the next visit can paint immediately.
+  try{ localStorage.setItem('nw_last_sheet_rows',JSON.stringify(rows)); }catch(e){}
+
   const cash=getByLabel(accountLabels,accountValues,'Cash');
   const wise=getByLabel(accountLabels,accountValues,'Wise');
   const ibkr=getByLabel(accountLabels,accountValues,'IBKR');
@@ -359,7 +368,7 @@ async function refreshOverview(){
   const distributionRealEstate=getByLabel(distributionLabels.slice(0,3),distributionValues.slice(0,3),'Real Estate');
 
   const investments=total-realEstate-equity;
-  const set=(id,n)=>{const el=document.getElementById(id); if(el && isFinite(n)) el.textContent=money(n)};
+  const set=(id,n)=>{const el=document.getElementById(id); if(el && isFinite(n)){ el.textContent=money(n); el.classList.remove('loadingValue'); }};
 
   set('liquidNW',liquid);
   set('accessibleNW',accessible);
@@ -400,7 +409,7 @@ async function refreshOverview(){
   updateWaterLevel(liquid,total);
 
   const ratio=(isFinite(liquid)&&isFinite(total)&&total>0)?(liquid/total*100):NaN;
-  const caption=document.querySelector('.waterCaption');
+  const caption=document.getElementById('liquidCaption');
   if(caption && isFinite(ratio)) caption.textContent=`${ratio.toFixed(1)}% LIQUID`;
 }
 
@@ -693,9 +702,22 @@ async function renderTimeline(){
 navs.forEach(btn=>btn.addEventListener('click',async()=>{
   navs.forEach(x=>x.classList.remove('active')); btn.classList.add('active');
   const v=btn.dataset.view;
-  if(v==='overview') app.innerHTML=overviewHTML;
+  if(v==='overview'){ app.innerHTML=overviewHTML; startOverviewRefresh(); }
   if(v==='timeline') await renderTimeline();
 }));
+// Paint cached data immediately when available, then refresh from Google Sheets in parallel.
+try{
+  const cached=localStorage.getItem('nw_last_sheet_rows');
+  if(cached){
+    const cachedRows=JSON.parse(cached);
+    if(Array.isArray(cachedRows) && cachedRows.length>=10){
+      // Reuse the normal parser without waiting for the network.
+      const originalFetch=window.fetch;
+      window.fetch=()=>Promise.resolve(new Response(JSON.stringify(cachedRows),{status:200,headers:{'Content-Type':'application/json'}}));
+      refreshOverview().finally(()=>{ window.fetch=originalFetch; });
+    }
+  }
+}catch(e){}
 startOverviewRefresh();
 </script>
 </body>
