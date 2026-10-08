@@ -27,7 +27,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
 .waterLine{fill:none;stroke:#b8d9fa;stroke-width:1.5}
 .fill{fill:url(#waterFill);opacity:.9}
 .waterLabel{position:absolute;right:18px;top:78px;font-size:11px;color:#2f80ed;background:#fff;border:1px solid #e4eefb;padding:7px 10px;border-radius:20px;box-shadow:0 4px 18px rgba(41,104,177,.08)}
-.waterCaption{position:absolute;bottom:13px;left:0;right:0;font-size:10px;letter-spacing:.15em;color:#a9b4c2}
+.waterCaption{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);font-size:12px;letter-spacing:.08em;font-weight:800;color:#2f80ed;background:#fff;border:1px solid #dceafb;padding:8px 12px;border-radius:999px;box-shadow:0 6px 18px rgba(41,104,177,.10);white-space:nowrap}
 .cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:15px;box-shadow:0 5px 20px rgba(27,43,66,.035)}
 .label{font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:#9aa4b3;font-weight:650}
@@ -46,12 +46,12 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
 .account{padding:12px 0}.account:first-of-type{padding-top:2px}.account+.account{border-top:1px solid #f0f2f5}
 .row{display:flex;align-items:center;justify-content:space-between;gap:10px}.name{font-size:13px;font-weight:560}.amt{font-size:13px;font-weight:650}.sub{font-size:10px;color:#a0a8b4;margin-top:3px}.bar{height:3px;background:#eef2f6;border-radius:10px;margin-top:8px;overflow:hidden}.bar i{display:block;height:100%;background:#77b6f4;border-radius:10px}
 .illiquid{margin-top:10px;background:#fff;border:1px solid #e6defa;border-radius:18px;padding:16px}.illiquid .sectionTitle{color:#8870cf}.illiquid .bar i{background:#8a6bdd}.note{margin-top:13px;padding:10px 11px;border-radius:11px;background:#faf8ff;color:#8870cf;font-size:10px;line-height:1.45}
-.bottom{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);width:auto;min-width:218px;padding:4px;background:rgba(255,255,255,.86);backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);border:1px solid rgba(218,225,234,.9);border-radius:18px;box-shadow:0 10px 34px rgba(25,43,67,.12);display:flex;gap:3px;z-index:20}
-.nav{appearance:none;border:0;background:transparent;text-align:center;color:#8b96a6;font-size:11px;font-weight:650;padding:9px 22px;min-height:38px;border-radius:14px;cursor:pointer;transition:.18s ease}
-.nav.active{color:#182230;background:#f0f6ff;box-shadow:0 1px 3px rgba(35,70,110,.08)}
-.nav .nicon{display:none}
+.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);padding:8px 14px calc(9px + env(safe-area-inset-bottom));background:rgba(255,255,255,.94);backdrop-filter:blur(18px);border-top:1px solid rgba(226,231,238,.9);display:grid;grid-template-columns:repeat(2,1fr);gap:5px;z-index:20}
+.nav{appearance:none;border:0;background:transparent;text-align:center;color:#8f99a8;font-size:10px;font-weight:560;padding:5px 2px;min-height:56px;border-radius:14px;cursor:pointer}
+.nav.active{color:#2f80ed;background:#eef6ff}
+.nav .nicon{width:34px;height:34px;margin:0 auto 3px;display:grid;place-items:center;font-size:24px;line-height:1;color:#778294;background:transparent}
 .nav.active .nicon{color:#2f80ed}
-@media(min-width:700px){.app{max-width:920px}.cards{grid-template-columns:repeat(3,1fr)}.sectionGrid{grid-template-columns:1fr 1fr}.water{height:210px}.heroValue{font-size:64px}.bottom{max-width:920px}}
+@media(min-width:700px){.app{max-width:920px}.cards{grid-template-columns:repeat(2,1fr)}.sectionGrid{grid-template-columns:1fr 1fr}.water{height:210px}.heroValue{font-size:64px}.bottom{max-width:920px}}
 
 
 /* Timeline mobile */
@@ -89,10 +89,6 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
 .growthPill.up{background:#edf8f2;color:#2f9b68}
 .growthPill.down{background:#fff0f0;color:#d15f5f}
 .growthPill.flat{background:#f1f4f7;color:#7f8b98}
-.loadingValue{display:inline-block;min-width:90px;height:1em;border-radius:8px;background:linear-gradient(90deg,#edf1f5 25%,#f7f9fb 50%,#edf1f5 75%);background-size:200% 100%;animation:skeleton 1.05s ease-in-out infinite;color:transparent!important}
-.heroValue.loadingValue{min-width:230px;height:52px;border-radius:14px;margin-left:auto;margin-right:auto}
-.waterCaption.loadingValue{min-width:92px;height:29px;border-radius:999px}
-@keyframes skeleton{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
 .sectionHeading{margin:22px 2px 10px;font-size:11px;letter-spacing:.14em;color:#929dad;font-weight:700}
 .allocation{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:18px;box-shadow:0 5px 20px rgba(27,43,66,.025)}
@@ -118,11 +114,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
   .allocationItem{gap:9px}
   .allocIcon{width:39px;height:39px}
 }
-.hero{padding-top:22px}.eyebrow{font-size:10px;letter-spacing:.16em}.heroValue{font-size:56px;font-weight:740}.water{height:190px;margin-top:10px}.waterCaption{bottom:18px;left:50%;right:auto;transform:translateX(-50%);font-size:15px;font-weight:800;letter-spacing:-.02em;color:#1f72d0;background:rgba(255,255,255,.88);padding:7px 12px;border:1px solid #d9eafa;border-radius:999px;box-shadow:0 6px 18px rgba(47,128,237,.10)}.cards{margin-top:4px}.card,.section,.accounts,.illiquid,.allocation{box-shadow:0 8px 28px rgba(27,43,66,.045)}@media(max-width:600px){.app{padding-left:16px;padding-right:16px}.bottom{bottom:12px}.nav{padding-left:24px;padding-right:24px}.heroValue{font-size:52px}}
 </style>
 
-<link rel="preconnect" href="https://script.google.com" crossorigin>
-<link rel="dns-prefetch" href="//script.google.com">
 <link rel="icon" type="image/png" sizes="180x180" href="./icons/icon-180.png">
 <link rel="apple-touch-icon" href="./icons/icon-180.png">
 <link rel="manifest" href="./manifest.json">
@@ -134,7 +127,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
 
   <section class="hero">
     <div class="eyebrow">LIQUID NET WORTH</div>
-    <div class="heroValue loadingValue" id="liquidNW" aria-label="Loading"></div>
+    <div class="heroValue" id="liquidNW">Loading…</div>
     <div class="delta">↑ 2.45% <span>vs last month</span></div>
     <div class="water">
       <svg viewBox="0 0 1200 220" preserveAspectRatio="none" aria-hidden="true">
@@ -156,19 +149,19 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
                     M0 103 C120 88 190 126 300 108 C420 89 500 88 610 106 C720 124 805 91 930 105 C1040 118 1090 98 1200 110"/>
         </path>
       </svg>
-      <div class="waterCaption loadingValue" id="liquidCaption" aria-label="Loading"></div>
+      <div class="waterCaption" id="liquidCaption">Loading…</div>
     </div>
   </section>
 
   <section class="cards">
     <div class="card">
       <div class="label">Total Net Worth</div>
-      <div class="value loadingValue" id="totalNW" aria-label="Loading"></div>
+      <div class="value" id="totalNW">Loading…</div>
       <div class="growthPill up" id="totalGrowth">↑ 3.12% <span>vs last month</span></div>
     </div>
     <div class="card">
       <div class="label">Accessible Net Worth</div>
-      <div class="value loadingValue" id="accessibleNW" aria-label="Loading"></div>
+      <div class="value" id="accessibleNW">Loading…</div>
       <div class="growthPill up" id="accessibleGrowth">↑ 1.85% <span>vs last month</span></div>
     </div>
   </section>
@@ -223,12 +216,11 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
 </main>
 <nav class="bottom" aria-label="Main navigation">
   <button class="nav active" data-view="overview" aria-label="Overview">
-Overview
+    <span class="nicon"><svg viewBox="0 0 24 24" width="27" height="27" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m3.5 10.7 8.5-7 8.5 7"/><path d="M5.5 9.5v10h13v-10"/><path d="M9.5 19.5v-5h5v5"/></svg></span>Overview
   </button>
   <button class="nav" data-view="timeline" aria-label="Timeline">
-Timeline
+    <span class="nicon"><svg viewBox="0 0 24 24" width="27" height="27" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 18V6"/><path d="M4 18h16"/><path d="m6.5 15 4-4 3 2 5-6"/></svg></span>Timeline
   </button>
-
 </nav>
 <script>
 const navs = document.querySelectorAll('.nav');
@@ -353,9 +345,6 @@ async function refreshOverview(){
   const dollar=getByLabel(quoteLabels,quoteValues,'Dolar Blue');
   const bitcoin=getByLabel(quoteLabels,quoteValues,'Bitcoin');
 
-  // Keep the latest successful sheet payload locally so the next visit can paint immediately.
-  try{ localStorage.setItem('nw_last_sheet_rows',JSON.stringify(rows)); }catch(e){}
-
   const cash=getByLabel(accountLabels,accountValues,'Cash');
   const wise=getByLabel(accountLabels,accountValues,'Wise');
   const ibkr=getByLabel(accountLabels,accountValues,'IBKR');
@@ -368,7 +357,7 @@ async function refreshOverview(){
   const distributionRealEstate=getByLabel(distributionLabels.slice(0,3),distributionValues.slice(0,3),'Real Estate');
 
   const investments=total-realEstate-equity;
-  const set=(id,n)=>{const el=document.getElementById(id); if(el && isFinite(n)){ el.textContent=money(n); el.classList.remove('loadingValue'); }};
+  const set=(id,n)=>{const el=document.getElementById(id); if(el && isFinite(n)) el.textContent=money(n)};
 
   set('liquidNW',liquid);
   set('accessibleNW',accessible);
@@ -378,6 +367,7 @@ async function refreshOverview(){
   set('equity',equity);
   set('realEstate',realEstate);
   set('investmentsNW',investments);
+
 
   const setPct=(id,n)=>{
     const el=document.getElementById(id);
@@ -410,7 +400,10 @@ async function refreshOverview(){
 
   const ratio=(isFinite(liquid)&&isFinite(total)&&total>0)?(liquid/total*100):NaN;
   const caption=document.getElementById('liquidCaption');
-  if(caption && isFinite(ratio)) caption.textContent=`${ratio.toFixed(1)}% LIQUID`;
+  if(caption && isFinite(ratio)){
+    caption.textContent=`${ratio.toFixed(1)}% LIQUID`;
+    caption.style.display='inline-flex';
+  }
 }
 
 
@@ -698,26 +691,12 @@ async function renderTimeline(){
   }
 }
 
-
 navs.forEach(btn=>btn.addEventListener('click',async()=>{
   navs.forEach(x=>x.classList.remove('active')); btn.classList.add('active');
   const v=btn.dataset.view;
-  if(v==='overview'){ app.innerHTML=overviewHTML; startOverviewRefresh(); }
+  if(v==='overview') app.innerHTML=overviewHTML;
   if(v==='timeline') await renderTimeline();
 }));
-// Paint cached data immediately when available, then refresh from Google Sheets in parallel.
-try{
-  const cached=localStorage.getItem('nw_last_sheet_rows');
-  if(cached){
-    const cachedRows=JSON.parse(cached);
-    if(Array.isArray(cachedRows) && cachedRows.length>=10){
-      // Reuse the normal parser without waiting for the network.
-      const originalFetch=window.fetch;
-      window.fetch=()=>Promise.resolve(new Response(JSON.stringify(cachedRows),{status:200,headers:{'Content-Type':'application/json'}}));
-      refreshOverview().finally(()=>{ window.fetch=originalFetch; });
-    }
-  }
-}catch(e){}
 startOverviewRefresh();
 </script>
 </body>
