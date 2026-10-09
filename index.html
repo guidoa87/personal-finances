@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#f7f9fc">
-<title></title>
+<title>Personal Finance</title>
 <style>
 :root{
   --bg:#f7f9fc; --card:#fff; --ink:#182230; --muted:#8a94a4;
@@ -96,12 +96,14 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
 .allocIcon{width:43px;height:43px;border-radius:50%;display:grid;place-items:center;flex:none;font-weight:800;font-size:20px}
 .houseIcon{background:#eaf4ff;color:#2f80ed}
 .cashIcon{background:#e9f8f1;color:#20a36a}
+.investIcon{background:#f1edff;color:#8064d8}
 .allocInfo{min-width:0;flex:1}
 .allocName{font-size:12px;color:#667386;white-space:nowrap}
 .allocPct{font-size:19px;font-weight:750;letter-spacing:-.03em;margin-top:2px}
 .allocBar{height:5px;background:#eef1f5;border-radius:10px;margin-top:7px;overflow:hidden}
 .allocBar i{display:block;height:100%;border-radius:10px;background:#6eb0ee}
 .allocationItem:nth-child(2) .allocBar i{background:#45b87f}
+.allocationItem:nth-child(3) .allocBar i{background:#9278e5}
 .marketCard{margin-top:10px}
 .marketLeft{display:flex;align-items:center;gap:10px}
 .marketIcon{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:750;font-size:17px}
@@ -126,6 +128,54 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
 .marketValue.skeleton{width:70px;height:18px;border-radius:6px}
 @keyframes skeletonShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
+/* Modern finance dashboard redesign */
+:root{--bg:#f3f5f8;--card:#fff;--ink:#141820;--muted:#858d9a;--line:#edf0f4;--blue:#315cf5;--green:#159b69}
+body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","Segoe UI",sans-serif}
+.app{max-width:560px;padding:24px 20px 112px}
+.top{height:auto;min-height:54px;margin-bottom:22px;align-items:center}
+.welcomeKicker{font-size:10px;font-weight:750;letter-spacing:.13em;color:#8b93a0;margin-bottom:5px}
+.welcomeTitle{font-size:25px;line-height:1.1;letter-spacing:-.045em;font-weight:760;color:#171b24}
+.topAction{width:44px;height:44px;border:0;border-radius:50%;background:#fff;color:#171b24;display:grid;place-items:center;box-shadow:0 2px 8px rgba(21,32,54,.035)}
+.hero{position:relative;text-align:left;background:#fff;border:1px solid #eef0f4;border-radius:28px;padding:24px 22px 0;overflow:hidden;box-shadow:0 8px 28px rgba(28,42,67,.035)}
+.eyebrow{font-size:11px;letter-spacing:.02em;color:#7d8592;font-weight:650}
+.heroValue{font-size:clamp(38px,10vw,52px);line-height:1.05;letter-spacing:-.06em;font-weight:780;margin:12px 0 10px;color:#11141a;white-space:nowrap}
+.heroValue.skeleton{margin:12px 0 10px;width:220px;max-width:100%;height:52px}
+.delta{display:inline-flex;align-items:center;font-size:12px;color:#13895c;background:#eaf8f1;border-radius:99px;padding:7px 10px;font-weight:700}
+.delta span{color:#738079;font-weight:550;margin-left:5px}
+.water{height:140px;margin:10px -22px 0;overflow:hidden;background:linear-gradient(180deg,#fff 0%,#f8fbff 100%)}
+.water svg{left:-5%;width:110%;height:100%;top:0}
+.waterLine{stroke:#8dbdf8;stroke-width:2}
+.fill{opacity:.95}
+.waterCaption{bottom:13px;left:22px;right:auto;transform:none;font-size:11px;letter-spacing:.015em;font-weight:800;color:#2855e8;background:#fff;border:1px solid #e6ecff;padding:9px 12px;border-radius:12px;box-shadow:0 3px 12px rgba(38,75,170,.07)}
+.waterCaption.skeleton{width:110px;height:34px}
+.cards{grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.card{border:0;border-radius:22px;padding:18px 16px;box-shadow:0 5px 18px rgba(28,42,67,.035);min-width:0}
+.label{font-size:11px;letter-spacing:0;text-transform:none;color:#818995;font-weight:600}
+.value{font-size:clamp(19px,5vw,24px);letter-spacing:-.045em;margin-top:10px;font-weight:760;white-space:nowrap}
+.value.skeleton{width:100%;max-width:145px;height:27px}
+.growthPill{margin-top:11px;padding:6px 8px;font-size:10px;white-space:nowrap}
+.growthPill span{display:none}
+.sectionHeading{margin:27px 3px 12px;font-size:11px;letter-spacing:.08em;color:#838b99;font-weight:800}
+.allocation{border:0;border-radius:22px;padding:18px 15px;gap:12px;box-shadow:0 5px 18px rgba(28,42,67,.025)}
+.allocIcon{width:38px;height:38px;border-radius:13px;font-size:18px}
+.houseIcon{background:#edf2ff;color:#315cf5}.cashIcon{background:#eaf8f1;color:#159b69}
+.allocName{font-size:11px;color:#7d8592}
+.allocPct{font-size:20px;font-weight:780;color:#171b24}
+.allocBar{height:4px;margin-top:8px}
+.section,.marketCard,.accounts,.illiquid{border:0;border-radius:22px;padding:18px;margin-top:12px;box-shadow:0 5px 18px rgba(28,42,67,.03)}
+.sectionTitle{font-size:12px;letter-spacing:0;text-transform:none;color:#252b35;font-weight:750;margin-bottom:12px}
+.marketRow{padding:11px 0}.marketName{font-size:13px;color:#3e4652}.marketValue{font-size:14px;color:#171b24}.marketDelta{font-size:10px}
+.marketIcon{width:36px;height:36px}
+.account{padding:14px 0}.account+.account{border-top:1px solid #f1f3f6}.name{font-size:14px;font-weight:650}.amt{font-size:14px;font-weight:750}.sub{font-size:11px;color:#9098a5}.bar{height:4px;background:#f0f2f6}.bar i{background:#6d92ff}
+.illiquid{border:1px solid #ece8fb;background:#fff}.illiquid .sectionTitle{color:#765dc5}.illiquid .note{background:#f7f4ff;border-radius:12px;font-size:11px}
+.bottom{width:min(560px,calc(100% - 24px));bottom:12px;padding:5px;background:rgba(255,255,255,.94);border:1px solid #eceff4;border-radius:22px;box-shadow:0 8px 30px rgba(24,34,52,.10);backdrop-filter:blur(20px);grid-template-columns:1fr 1fr;gap:4px}
+.nav{min-height:48px;border-radius:17px;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:9px;padding:8px}
+.nav .nicon{width:23px;height:23px;margin:0;display:flex;align-items:center;justify-content:center}
+.nav .nicon svg{width:22px;height:22px}
+.nav.active{background:#315cf5;color:#fff}.nav.active .nicon{color:#fff}.nav:not(.active){color:#7f8794}
+@media(min-width:700px){.app{max-width:760px}.hero{padding:28px 28px 0}.water{margin-left:-28px;margin-right:-28px;height:160px}.waterCaption{left:28px}.cards{grid-template-columns:1fr 1fr}.bottom{max-width:760px}.section,.marketCard,.accounts,.illiquid{margin-top:14px}}
+@media(max-width:380px){.app{padding-left:14px;padding-right:14px}.hero{padding-left:17px;padding-right:17px}.water{margin-left:-17px;margin-right:-17px}.waterCaption{left:17px}.card{padding:16px 12px}.value{font-size:19px}.growthPill{font-size:9px}}
+
 </style>
 
 <link rel="icon" type="image/png" sizes="180x180" href="./icons/icon-180.png">
@@ -135,7 +185,9 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
 </head>
 <body>
 <main class="app">
-  <div class="top"><div class="brand"></div></div>
+  <div class="top">
+    <div class="welcome"><div class="welcomeKicker">PERSONAL FINANCE</div><div class="welcomeTitle">Your overview</div></div>
+  </div>
 
   <section class="hero">
     <div class="eyebrow">LIQUID NET WORTH</div>
@@ -194,6 +246,14 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
         <div class="allocName">Cash</div>
         <div class="allocPct skeleton" id="cashPct" aria-label="Loading"></div>
         <div class="allocBar"><i id="cashBar"></i></div>
+      </div>
+    </div>
+    <div class="allocationItem">
+      <div class="allocIcon investIcon" aria-hidden="true">↗</div>
+      <div class="allocInfo">
+        <div class="allocName">Investments</div>
+        <div class="allocPct skeleton" id="investmentsPct" aria-label="Loading"></div>
+        <div class="allocBar"><i id="investmentsBar"></i></div>
       </div>
     </div>
   </section>
@@ -389,10 +449,13 @@ async function refreshOverview(){
     const el=document.getElementById(id);
     if(el && isFinite(n)) el.style.width=`${Math.max(0,Math.min(100,n))}%`;
   };
+  const distributionInvestments=Math.max(0,100-distributionRealEstate-distributionCash);
   setPct('realEstatePct',distributionRealEstate);
   setPct('cashPct',distributionCash);
+  setPct('investmentsPct',distributionInvestments);
   setBar('realEstateBar',distributionRealEstate);
   setBar('cashBar',distributionCash);
+  setBar('investmentsBar',distributionInvestments);
 
   // Update the liquid/accessibility account amounts too.
   const accountMap={IBKR:ibkr,Wise:wise,Nexo:nexo,BingX:bingx,Cash:cash};
