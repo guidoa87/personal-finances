@@ -316,12 +316,12 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"SF Pro D
   </section>
 
   <section class="accounts">
-    <div class="sectionTitle">Liquid & Accessible</div>
-    <div class="account"><div class="row"><div class="name">IBKR</div><div class="amt skeleton" data-loading-amt="true" aria-label="Loading"></div></div><div class="sub">93.9% of liquid</div><div class="bar"><i style="width:94%"></i></div></div>
-    <div class="account"><div class="row"><div class="name">Wise</div><div class="amt skeleton" data-loading-amt="true" aria-label="Loading"></div></div><div class="sub">2.7% of liquid</div><div class="bar"><i style="width:3%"></i></div></div>
-    <div class="account"><div class="row"><div class="name">Nexo</div><div class="amt skeleton" data-loading-amt="true" aria-label="Loading"></div></div><div class="sub">0.6% of liquid</div><div class="bar"><i style="width:1%"></i></div></div>
-    <div class="account"><div class="row"><div class="name">BingX</div><div class="amt skeleton" data-loading-amt="true" aria-label="Loading"></div></div><div class="sub">0.1% of liquid</div><div class="bar"><i style="width:1%"></i></div></div>
-    <div class="account"><div class="row"><div class="name">Cash</div><div class="amt skeleton" data-loading-amt="true" aria-label="Loading"></div></div><div class="sub">2.7% of liquid</div><div class="bar"><i style="width:3%"></i></div></div>
+    <div class="sectionTitle">Accessible</div>
+    <div class="account"><div class="row"><div class="name">IBKR</div><div class="amt skeleton" data-loading-amt="true" aria-label="Loading"></div></div><div class="sub">73.0% of accessible</div><div class="bar"><i style="width:94%"></i></div></div>
+    <div class="account"><div class="row"><div class="name">Wise</div><div class="amt skeleton" data-loading-amt="true" aria-label="Loading"></div></div><div class="sub">2.1% of accessible</div><div class="bar"><i style="width:3%"></i></div></div>
+    <div class="account"><div class="row"><div class="name">Nexo</div><div class="amt skeleton" data-loading-amt="true" aria-label="Loading"></div></div><div class="sub">0.5% of accessible</div><div class="bar"><i style="width:1%"></i></div></div>
+    <div class="account"><div class="row"><div class="name">BingX</div><div class="amt skeleton" data-loading-amt="true" aria-label="Loading"></div></div><div class="sub">0.1% of accessible</div><div class="bar"><i style="width:1%"></i></div></div>
+    <div class="account"><div class="row"><div class="name">Cash</div><div class="amt skeleton" data-loading-amt="true" aria-label="Loading"></div></div><div class="sub">2.1% of accessible</div><div class="bar"><i style="width:3%"></i></div></div>
     <div class="account"><div class="row"><div class="name">Real Estate</div><div class="amt skeleton" id="realEstateValue" aria-label="Loading"></div></div><div class="sub">Property value</div><div class="bar"><i id="realEstateAccessibleBar" style="width:0%;background:#315cf5"></i></div></div>
   </section>
 
@@ -515,11 +515,11 @@ async function refreshOverview(){
       if(sub && name==='Real Estate') sub.textContent=(accessible>0 ? ((realEstate/accessible)*100).toFixed(1)+'% of accessible' : 'Property value');
       if(name==='Real Estate'){const bar=row.querySelector('.bar i');if(bar && accessible>0) bar.style.width=Math.max(0,Math.min(100,realEstate/accessible*100))+'%';}
       else if(sub && total>0 && (name==='IBKR' || name==='Wise' || name==='Nexo' || name==='BingX' || name==='Cash')){
-        sub.textContent=((accountMap[name]/liquid)*100).toFixed(1)+'% of liquid';
+        sub.textContent=(accessible>0 ? ((accountMap[name]/accessible)*100).toFixed(1)+'% of accessible' : '');
       }
     }
   });
-  updateAccountBars();
+  updateAccountBars(accessible);
   updateWaterLevel(liquid,total);
 
   const ratio=(isFinite(liquid)&&isFinite(total)&&total>0)?(liquid/total*100):NaN;
@@ -559,21 +559,18 @@ function updateWaterLevel(liquid,total){
   }
 }
 
-function updateAccountBars(){
-  const accounts={};
+function updateAccountBars(accessible){
   document.querySelectorAll('.account').forEach(row=>{
     const name=row.querySelector('.name')?.textContent?.trim();
-    if(name==='Real Estate') return;
     const value=parseFloat((row.querySelector('.amt')?.textContent||'').replace(/[$,]/g,''));
-    if(name && isFinite(value)) accounts[name]=value;
-  });
-  const total=Object.values(accounts).reduce((a,b)=>a+b,0);
-  document.querySelectorAll('.account').forEach(row=>{
-    const name=row.querySelector('.name')?.textContent?.trim();
     const bar=row.querySelector('.bar i');
-    if(name==='Real Estate') return;
-    if(bar && total && isFinite(accounts[name])){
-      bar.style.width=Math.max(1,accounts[name]/total*100)+'%';
+    if(bar && accessible>0 && isFinite(value)){
+      bar.style.width=Math.max(0,Math.min(100,value/accessible*100))+'%';
+      bar.style.background='#315cf5';
+    }
+    const sub=row.querySelector('.sub');
+    if(sub && accessible>0 && isFinite(value)){
+      sub.textContent=(value/accessible*100).toFixed(1)+'% of accessible';
     }
   });
 }
