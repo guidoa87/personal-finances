@@ -185,7 +185,7 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"SF Pro D
 .allocName{font-size:10px;white-space:normal;line-height:1.2;min-height:24px;display:flex;align-items:flex-end}
 .allocPct{font-size:20px;line-height:1.15}
 .allocBar{width:100%;margin-top:8px}
-.bottom{bottom:calc(30px + env(safe-area-inset-bottom));width:min(300px,calc(100% - 44px));padding:5px;border-radius:24px;box-shadow:0 10px 35px rgba(24,34,52,.15);background:rgba(255,255,255,.9)}
+.bottom{bottom:calc(18px + env(safe-area-inset-bottom));width:min(300px,calc(100% - 44px));padding:5px;border-radius:24px;box-shadow:0 10px 35px rgba(24,34,52,.15);background:rgba(255,255,255,.9)}
 .app{padding-bottom:145px}
 
 /* Timeline redesign inspired by modern banking apps */
@@ -213,7 +213,12 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"SF Pro D
 .timelineStat{background:#fff;border-radius:20px;padding:16px;box-shadow:0 5px 18px rgba(28,42,67,.025)}
 .timelineStatLabel{font-size:11px;color:#818995;font-weight:600}
 .timelineStatValue{font-size:18px;font-weight:770;letter-spacing:-.035em;margin-top:7px;color:#171b24}
-@media(max-width:380px){.allocation{gap:4px;padding:14px 7px}.allocationItem{padding:3px}.allocName{font-size:9px}.allocPct{font-size:18px}.allocIcon{width:33px;height:33px}.bottom{bottom:calc(25px + env(safe-area-inset-bottom));width:min(286px,calc(100% - 48px))}}
+@media(max-width:380px){.allocation{gap:4px;padding:14px 7px}.allocationItem{padding:3px}.allocName{font-size:9px}.allocPct{font-size:18px}.allocIcon{width:33px;height:33px}.bottom{bottom:calc(14px + env(safe-area-inset-bottom));width:min(286px,calc(100% - 48px))}}
+.timelineAmount.skeleton{display:block;width:72%;max-width:310px;height:48px;margin:8px 0 12px;border-radius:12px;color:transparent!important}
+.timelineDeltaSkeleton.skeleton{display:inline-block;width:150px;height:28px;border-radius:999px;color:transparent!important}
+.timelineBarSkeleton{display:inline-block;width:32px;height:100px;border-radius:9px 9px 4px 4px;background:linear-gradient(90deg,#edf1f5 25%,#f8fafc 50%,#edf1f5 75%);background-size:200% 100%;animation:skeletonShimmer 1.35s ease-in-out infinite}
+.timelineStatValue.skeleton{display:block;width:105px;height:22px;border-radius:7px;color:transparent!important}
+
 
 </style>
 
@@ -316,6 +321,7 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"SF Pro D
     <div class="account"><div class="row"><div class="name">Nexo</div><div class="amt skeleton" data-loading-amt="true" aria-label="Loading"></div></div><div class="sub">0.6% of liquid</div><div class="bar"><i style="width:1%"></i></div></div>
     <div class="account"><div class="row"><div class="name">BingX</div><div class="amt skeleton" data-loading-amt="true" aria-label="Loading"></div></div><div class="sub">0.1% of liquid</div><div class="bar"><i style="width:1%"></i></div></div>
     <div class="account"><div class="row"><div class="name">Cash</div><div class="amt skeleton" data-loading-amt="true" aria-label="Loading"></div></div><div class="sub">2.7% of liquid</div><div class="bar"><i style="width:3%"></i></div></div>
+    <div class="account"><div class="row"><div class="name">Real Estate</div><div class="amt skeleton" id="realEstateValue" aria-label="Loading"></div></div><div class="sub">Property value</div><div class="bar"><i style="width:100%;background:#9b87ef"></i></div></div>
   </section>
 
   <section class="illiquid">
@@ -477,6 +483,7 @@ async function refreshOverview(){
   set('bitcoin',bitcoin);
   set('equity',equity);
   set('realEstate',realEstate);
+  set('realEstateValue',realEstate);
   set('investmentsNW',investments);
 
 
@@ -497,14 +504,15 @@ async function refreshOverview(){
   setBar('investmentsBar',distributionInvestments);
 
   // Update the liquid/accessibility account amounts too.
-  const accountMap={IBKR:ibkr,Wise:wise,Nexo:nexo,BingX:bingx,Cash:cash};
+  const accountMap={IBKR:ibkr,Wise:wise,Nexo:nexo,BingX:bingx,Cash:cash,'Real Estate':realEstate};
   document.querySelectorAll('.account').forEach(row=>{
     const name=row.querySelector('.name')?.textContent?.trim();
     if(name && isFinite(accountMap[name])){
       const amt=row.querySelector('.amt');
       if(amt){amt.textContent=money(accountMap[name]);amt.classList.remove('skeleton');}
       const sub=row.querySelector('.sub');
-      if(sub && total>0 && (name==='IBKR' || name==='Wise' || name==='Nexo' || name==='BingX' || name==='Cash')){
+      if(sub && name==='Real Estate') sub.textContent='Property value';
+      else if(sub && total>0 && (name==='IBKR' || name==='Wise' || name==='Nexo' || name==='BingX' || name==='Cash')){
         sub.textContent=((accountMap[name]/liquid)*100).toFixed(1)+'% of liquid';
       }
     }
@@ -553,6 +561,7 @@ function updateAccountBars(){
   const accounts={};
   document.querySelectorAll('.account').forEach(row=>{
     const name=row.querySelector('.name')?.textContent?.trim();
+    if(name==='Real Estate') return;
     const value=parseFloat((row.querySelector('.amt')?.textContent||'').replace(/[$,]/g,''));
     if(name && isFinite(value)) accounts[name]=value;
   });
@@ -560,6 +569,7 @@ function updateAccountBars(){
   document.querySelectorAll('.account').forEach(row=>{
     const name=row.querySelector('.name')?.textContent?.trim();
     const bar=row.querySelector('.bar i');
+    if(name==='Real Estate') return;
     if(bar && total && isFinite(accounts[name])){
       bar.style.width=Math.max(1,accounts[name]/total*100)+'%';
     }
@@ -704,20 +714,20 @@ async function renderTimeline(){
     </div>
     <section class="timelineBalance">
       <div class="timelineBalanceLabel" id="timelineMonth">Current month</div>
-      <div id="timelineCurrent" class="timelineAmount">Loading…</div>
-      <div class="timelineMeta"><div id="timelineDelta" class="growthPill flat">Loading history</div><div style="font-size:10px;color:#9aa3af">Net worth</div></div>
+      <div id="timelineCurrent" class="timelineAmount skeleton" aria-label="Loading"></div>
+      <div class="timelineMeta"><div id="timelineDelta" class="growthPill flat timelineDeltaSkeleton skeleton" aria-label="Loading"></div><div style="font-size:10px;color:#9aa3af">Net worth</div></div>
     </section>
     <section class="timelineChartCard">
       <div class="timelineChartTitle">Net worth over time</div>
       <div class="timelineChartSub">Select a month to explore your progress</div>
       <div id="monthScroller" style="overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;touch-action:pan-x">
-        <div id="monthChart" style="display:flex;align-items:flex-end;gap:8px;height:245px;width:max-content;padding:0 22px"></div>
+        <div id="monthChart" style="display:flex;align-items:flex-end;gap:8px;height:245px;width:max-content;padding:0 22px">${Array.from({length:10},()=>'<span class="timelineBarSkeleton"></span>').join('')}</div>
       </div>
       <div class="timelineHint"><span>←</span><span>Swipe through history</span><span>→</span></div>
     </section>
     <div class="timelineStats">
       <div class="timelineStat"><div class="timelineStatLabel">Target</div><div class="timelineStatValue">$500,000</div></div>
-      <div class="timelineStat"><div class="timelineStatLabel">Months tracked</div><div class="timelineStatValue" id="timelinePoints">—</div></div>
+      <div class="timelineStat"><div class="timelineStatLabel">Months tracked</div><div class="timelineStatValue skeleton" id="timelinePoints" aria-label="Loading"></div></div>
     </div>
   </div>`;
 
@@ -728,11 +738,13 @@ async function renderTimeline(){
     const current=latest?.total||0;
     const delta=previous?current-previous.total:0;
     const pointsEl=document.getElementById('timelinePoints');
-    if(pointsEl) pointsEl.textContent=String(data.length);
+    if(pointsEl){pointsEl.textContent=String(data.length);pointsEl.classList.remove('skeleton');}
 
     const monthLabel=latest?.date.toLocaleDateString('en-US',{month:'long',year:'numeric'})||'Current';
     document.getElementById('timelineMonth').textContent=monthLabel;
-    document.getElementById('timelineCurrent').textContent=money(current);
+    const currentEl=document.getElementById('timelineCurrent');
+    currentEl.textContent=money(current);
+    currentEl.classList.remove('skeleton');
     const pct=previous&&previous.total?((current-previous.total)/previous.total)*100:0;
     const deltaEl=document.getElementById('timelineDelta');
     deltaEl.textContent=`${pct>=0?'↑':'↓'} ${Math.abs(pct).toFixed(2)}% vs last month`;
@@ -809,7 +821,13 @@ async function renderTimeline(){
     selectMonth(selected,false);
     requestAnimationFrame(()=>buttons.at(-1)?.scrollIntoView({behavior:'instant',block:'nearest',inline:'center'}));
   }catch(e){
-    document.getElementById('monthChart').innerHTML='<div style="padding:90px 20px;text-align:center;color:#8d98a7">Could not load Race to 500k</div>';
+    const currentEl=document.getElementById('timelineCurrent');
+    if(currentEl){currentEl.classList.remove('skeleton');currentEl.textContent='Unavailable';}
+    const deltaEl=document.getElementById('timelineDelta');
+    if(deltaEl){deltaEl.classList.remove('skeleton','timelineDeltaSkeleton');deltaEl.textContent='Could not load history';}
+    const pointsEl=document.getElementById('timelinePoints');
+    if(pointsEl){pointsEl.classList.remove('skeleton');pointsEl.textContent='';}
+    document.getElementById('monthChart').innerHTML='<div style="padding:90px 20px;text-align:center;color:#8d98a7">Could not load Race to 500k</div>'; 
     console.error(e);
   }
 }
