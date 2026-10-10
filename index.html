@@ -167,6 +167,7 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"SF Pro D
 .marketRow{padding:11px 0}.marketName{font-size:13px;color:#3e4652}.marketValue{font-size:14px;color:#171b24}.marketDelta{font-size:10px}
 .marketIcon{width:36px;height:36px}
 .account{padding:14px 0}.account+.account{border-top:1px solid #f1f3f6}.name{font-size:14px;font-weight:650}.amt{font-size:14px;font-weight:750}.sub{font-size:11px;color:#9098a5}.bar{height:4px;background:#f0f2f6}.bar i{background:#6d92ff}
+.account .bar i{background:#315cf5}.account .bar i.realEstateBar{background:#315cf5}
 .illiquid{border:1px solid #ece8fb;background:#fff}.illiquid .sectionTitle{color:#765dc5}.illiquid .note{background:#f7f4ff;border-radius:12px;font-size:11px}
 .bottom{width:min(560px,calc(100% - 24px));bottom:12px;padding:5px;background:rgba(255,255,255,.94);border:1px solid #eceff4;border-radius:22px;box-shadow:0 8px 30px rgba(24,34,52,.10);backdrop-filter:blur(20px);grid-template-columns:1fr 1fr;gap:4px}
 .nav{min-height:48px;border-radius:17px;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:9px;padding:8px}
@@ -185,7 +186,7 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"SF Pro D
 .allocName{font-size:10px;white-space:normal;line-height:1.2;min-height:24px;display:flex;align-items:flex-end}
 .allocPct{font-size:20px;line-height:1.15}
 .allocBar{width:100%;margin-top:8px}
-.bottom{bottom:calc(18px + env(safe-area-inset-bottom));width:min(300px,calc(100% - 44px));padding:5px;border-radius:24px;box-shadow:0 10px 35px rgba(24,34,52,.15);background:rgba(255,255,255,.9)}
+.bottom{bottom:calc(8px + env(safe-area-inset-bottom));width:min(300px,calc(100% - 44px));padding:5px;border-radius:24px;box-shadow:0 10px 35px rgba(24,34,52,.15);background:rgba(255,255,255,.9)}
 .app{padding-bottom:145px}
 
 /* Timeline redesign inspired by modern banking apps */
@@ -321,7 +322,7 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"SF Pro D
     <div class="account"><div class="row"><div class="name">Nexo</div><div class="amt skeleton" data-loading-amt="true" aria-label="Loading"></div></div><div class="sub">0.6% of liquid</div><div class="bar"><i style="width:1%"></i></div></div>
     <div class="account"><div class="row"><div class="name">BingX</div><div class="amt skeleton" data-loading-amt="true" aria-label="Loading"></div></div><div class="sub">0.1% of liquid</div><div class="bar"><i style="width:1%"></i></div></div>
     <div class="account"><div class="row"><div class="name">Cash</div><div class="amt skeleton" data-loading-amt="true" aria-label="Loading"></div></div><div class="sub">2.7% of liquid</div><div class="bar"><i style="width:3%"></i></div></div>
-    <div class="account"><div class="row"><div class="name">Real Estate</div><div class="amt skeleton" id="realEstateValue" aria-label="Loading"></div></div><div class="sub">Property value</div><div class="bar"><i style="width:100%;background:#9b87ef"></i></div></div>
+    <div class="account"><div class="row"><div class="name">Real Estate</div><div class="amt skeleton" id="realEstateValue" aria-label="Loading"></div></div><div class="sub">Property value</div><div class="bar"><i id="realEstateAccessibleBar" style="width:0%;background:#315cf5"></i></div></div>
   </section>
 
   <section class="illiquid">
@@ -511,7 +512,8 @@ async function refreshOverview(){
       const amt=row.querySelector('.amt');
       if(amt){amt.textContent=money(accountMap[name]);amt.classList.remove('skeleton');}
       const sub=row.querySelector('.sub');
-      if(sub && name==='Real Estate') sub.textContent='Property value';
+      if(sub && name==='Real Estate') sub.textContent=(accessible>0 ? ((realEstate/accessible)*100).toFixed(1)+'% of accessible' : 'Property value');
+      if(name==='Real Estate'){const bar=row.querySelector('.bar i');if(bar && accessible>0) bar.style.width=Math.max(0,Math.min(100,realEstate/accessible*100))+'%';}
       else if(sub && total>0 && (name==='IBKR' || name==='Wise' || name==='Nexo' || name==='BingX' || name==='Cash')){
         sub.textContent=((accountMap[name]/liquid)*100).toFixed(1)+'% of liquid';
       }
