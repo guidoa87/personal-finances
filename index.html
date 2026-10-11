@@ -706,13 +706,13 @@ function timelineSVG(data){
   };
 }
 
-async function getCurrentTotalNW(){
+async function getCurrentLiquidNW(){
   const rows=await getMainSheetData();
   if(!rows || rows.length<4) throw new Error('Unexpected main sheet response');
   const labels=rows[2] || [], values=rows[3] || [];
-  const i=labels.findIndex(x=>String(x).trim().toLowerCase()==='total nw');
+  const i=labels.findIndex(x=>String(x).trim().toLowerCase()==='liquid nw');
   const value=i>=0 ? num(values[i]) : NaN;
-  if(!isFinite(value) || value<=0) throw new Error('Current Total NW unavailable');
+  if(!isFinite(value) || value<=0) throw new Error('Current Liquid NW unavailable');
   return value;
 }
 
@@ -724,10 +724,10 @@ async function renderTimeline(){
     <section class="timelineBalance">
       <div class="timelineBalanceLabel" id="timelineMonth">Current month</div>
       <div id="timelineCurrent" class="timelineAmount skeleton" aria-label="Loading"></div>
-      <div class="timelineMeta"><div id="timelineDelta" class="growthPill flat timelineDeltaSkeleton skeleton" aria-label="Loading"></div><div style="font-size:10px;color:#9aa3af">Net worth</div></div>
+      <div class="timelineMeta"><div id="timelineDelta" class="growthPill flat timelineDeltaSkeleton skeleton" aria-label="Loading"></div><div style="font-size:10px;color:#9aa3af">Liquid net worth</div></div>
     </section>
     <section class="timelineChartCard">
-      <div class="timelineChartTitle">Net worth over time</div>
+      <div class="timelineChartTitle">Liquid net worth over time</div>
       <div class="timelineChartSub">Select a month to explore your progress</div>
       <div id="monthScroller" style="overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;touch-action:pan-x">
         <div id="monthChart" style="display:flex;align-items:flex-end;gap:8px;height:245px;width:max-content;padding:0 22px">${Array.from({length:10},()=>'<span class="timelineBarSkeleton"></span>').join('')}</div>
@@ -742,9 +742,9 @@ async function renderTimeline(){
 
   try{
     const data=await getTimelineData();
-    // Use the live Total NW from the main sheet for the current month, rather
+    // Use the live Liquid NW from the main sheet for the current month, rather
     // than the month-opening snapshot stored in the historical timeline.
-    const liveTotal=await getCurrentTotalNW();
+    const liveTotal=await getCurrentLiquidNW();
     const now=new Date();
     const monthStart=new Date(now.getFullYear(),now.getMonth(),1);
     const latest=data.at(-1);
