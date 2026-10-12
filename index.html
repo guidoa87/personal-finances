@@ -138,8 +138,8 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"SF Pro D
 .topAction{width:44px;height:44px;border:0;border-radius:50%;background:#fff;color:#171b24;display:grid;place-items:center;box-shadow:0 2px 8px rgba(21,32,54,.035)}
 .hero{position:relative;text-align:left;background:#fff;border:1px solid #eef0f4;border-radius:28px;padding:24px 22px 0;overflow:hidden;box-shadow:0 8px 28px rgba(28,42,67,.035)}
 .eyebrow{font-size:11px;letter-spacing:.02em;color:#7d8592;font-weight:650}
-.heroValue{font-size:clamp(57px,15vw,78px);line-height:1.02;letter-spacing:-.065em;font-weight:800;margin:12px 0 10px;color:#11141a;white-space:nowrap}
-.heroValue.skeleton{margin:12px 0 10px;width:300px;max-width:100%;height:78px}
+.heroValue{font-size:clamp(51px,13.5vw,69px);line-height:1.04;letter-spacing:-.065em;font-weight:800;margin:12px 0 10px;color:#11141a;white-space:nowrap}
+.heroValue.skeleton{margin:12px 0 10px;width:84%;max-width:410px;height:70px}
 .delta{display:inline-flex;align-items:center;font-size:12px;color:#13895c;background:#eaf8f1;border-radius:99px;padding:7px 10px;font-weight:700}
 .delta span{color:#738079;font-weight:550;margin-left:5px}
 .water{height:140px;margin:10px -22px 0;overflow:hidden;background:linear-gradient(180deg,#fff 0%,#f8fbff 100%)}
@@ -170,7 +170,7 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"SF Pro D
 .account .bar i{background:#315cf5}.account .bar i.realEstateBar{background:#315cf5}
 .illiquid{border:1px solid #ece8fb;background:#fff}.illiquid .sectionTitle{color:#765dc5}.illiquid .note{background:#f7f4ff;border-radius:12px;font-size:11px}
 .bottom{width:min(560px,calc(100% - 24px));bottom:12px;padding:5px;background:rgba(255,255,255,.94);border:1px solid #eceff4;border-radius:22px;box-shadow:0 8px 30px rgba(24,34,52,.10);backdrop-filter:blur(20px);grid-template-columns:1fr 1fr;gap:4px}
-.nav{min-height:48px;border-radius:17px;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:9px;padding:8px}
+.nav{height:50px;min-height:50px;max-height:50px;align-self:center;box-sizing:border-box;border-radius:17px;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:9px;padding:8px;line-height:1}
 .nav .nicon{width:23px;height:23px;margin:0;display:flex;align-items:center;justify-content:center}
 .nav .nicon svg{width:22px;height:22px}
 .nav.active{background:#315cf5;color:#fff}.nav.active .nicon{color:#fff}.nav:not(.active){color:#7f8794}
@@ -186,7 +186,7 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"SF Pro D
 .allocName{font-size:10px;white-space:normal;line-height:1.2;min-height:24px;display:flex;align-items:flex-end}
 .allocPct{font-size:20px;line-height:1.15}
 .allocBar{width:100%;margin-top:8px}
-.bottom{bottom:calc(8px + env(safe-area-inset-bottom));width:min(300px,calc(100% - 44px));padding:5px;border-radius:24px;box-shadow:0 10px 35px rgba(24,34,52,.15);background:rgba(255,255,255,.9)}
+.bottom{bottom:calc(8px + env(safe-area-inset-bottom));width:min(300px,calc(100% - 44px));height:62px;padding:5px;border-radius:24px;box-shadow:0 10px 35px rgba(24,34,52,.15);background:rgba(255,255,255,.9);align-items:stretch;box-sizing:border-box}
 .app{padding-bottom:145px}
 
 /* Timeline redesign inspired by modern banking apps */
