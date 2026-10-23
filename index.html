@@ -520,24 +520,24 @@ async function refreshOverview(){
     }
   });
   updateAccountBars(accessible);
-  updateWaterLevel(accessible,total);
+  updateWaterLevel(liquid,accessible);
 
-  const ratio=(isFinite(accessible)&&isFinite(total)&&total>0)?(accessible/total*100):NaN;
+  const ratio=(isFinite(liquid)&&isFinite(accessible)&&accessible>0)?(liquid/accessible*100):NaN;
   const caption=document.getElementById('liquidCaption');
   if(caption && isFinite(ratio)){
-    caption.textContent=`${ratio.toFixed(1)}% ACCESSIBLE`;
+    caption.textContent=`${ratio.toFixed(1)}% LIQUID`;
     caption.classList.remove('skeleton');
     caption.style.display='inline-flex';
   }
 }
 
 
-function updateWaterLevel(accessible,total){
-  if(!isFinite(accessible) || !isFinite(total) || total<=0) return;
+function updateWaterLevel(liquid,accessible){
+  if(!isFinite(liquid) || !isFinite(accessible) || accessible<=0) return;
 
-  // The water height represents Accessible Net Worth as a share of Total NW.
-  // SVG viewBox height is 220, so the mean waterline is exactly (1 - ratio) * 220.
-  const ratio=Math.max(0,Math.min(1,accessible/total));
+  // The water height represents Liquid NW as a share of Accessible NW.
+  // The SVG viewBox height is 220, so the mean waterline matches the liquid ratio.
+  const ratio=Math.max(0,Math.min(1,liquid/accessible));
   const base=220*(1-ratio);
   const amp=Math.min(6, Math.max(2, 220*Math.min(ratio,1-ratio)*0.035));
   const n=(v)=>Number(v.toFixed(1));
