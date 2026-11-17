@@ -221,6 +221,55 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"SF Pro D
 .timelineStatValue.skeleton{display:block;width:105px;height:22px;border-radius:7px;color:transparent!important}
 
 
+
+/* Reworked Apple-inspired visual system */
+:root{--bg:#f5f5f7;--card:#fff;--ink:#1d1d1f;--muted:#6e6e73;--line:rgba(60,60,67,.14);--blue:#007aff;--blue2:#64b5ff;--green:#248a3d;--purple:#8b78d6;color-scheme:light}
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;letter-spacing:-.012em}
+.app{width:min(100% - 56px,1040px);max-width:1040px;margin:0 auto;padding:38px 0 150px}
+.top{height:auto;display:flex;align-items:flex-end;justify-content:space-between;margin:0 0 24px;padding:0 2px}
+.welcomeKicker{font-size:11px;letter-spacing:.12em;font-weight:700;color:var(--muted);margin-bottom:7px}
+.welcomeTitle,.timelineHeading{font-size:32px;font-weight:700;letter-spacing:-.045em;line-height:1.12;color:var(--ink)}
+.hero{position:relative;text-align:left;background:linear-gradient(145deg,#fff 0%,#fff 64%,#f7fbff 100%);border:1px solid rgba(60,60,67,.10);border-radius:30px;padding:30px 32px 0;overflow:hidden;box-shadow:0 2px 4px rgba(0,0,0,.025),0 14px 36px rgba(0,0,0,.045)}
+.eyebrow{font-size:12px;letter-spacing:.015em;font-weight:600;color:var(--muted)}
+.heroValue{font-size:clamp(54px,7vw,78px);line-height:1.04;letter-spacing:-.075em;font-weight:730;margin:12px 0 12px;color:var(--ink);font-variant-numeric:tabular-nums}
+.delta{display:inline-flex;align-items:center;gap:5px;background:#eaf7ed;color:#248a3d;border-radius:9px;padding:7px 10px;font-size:12px;font-weight:650}
+.delta span{color:#64816b;font-weight:500;margin-left:2px}
+.water{height:170px;position:relative;margin:8px -32px 0;overflow:hidden;background:linear-gradient(180deg,rgba(235,246,255,.1),rgba(225,241,255,.35))}
+.water svg{position:absolute;inset:0;width:100%;height:100%;left:0}
+.waterLine{stroke:#9bcfff;stroke-width:1.5}
+.fill{opacity:.95}
+.waterCaption{position:absolute;left:32px;bottom:18px;transform:none;background:rgba(255,255,255,.88);border:1px solid rgba(0,122,255,.13);border-radius:999px;padding:8px 12px;color:#0066cc;font-size:11px;font-weight:750;letter-spacing:.04em;box-shadow:0 3px 12px rgba(0,0,0,.045);backdrop-filter:blur(12px)}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px}
+.card{background:#fff;border:1px solid rgba(60,60,67,.10);border-radius:22px;padding:22px 24px;box-shadow:0 2px 8px rgba(0,0,0,.018);min-width:0}
+.label{font-size:12px;text-transform:none;letter-spacing:0;color:var(--muted);font-weight:550}
+.value{font-size:clamp(23px,2.6vw,30px);font-weight:700;letter-spacing:-.045em;margin-top:10px;color:var(--ink);font-variant-numeric:tabular-nums}
+.growthPill{display:inline-flex;align-items:center;gap:4px;margin-top:10px;padding:6px 9px;border-radius:8px;font-size:11px;font-weight:650}
+.growthPill.up{background:#eaf7ed;color:#248a3d}.growthPill.down{background:#fff0f0;color:#c93434}.growthPill.flat{background:#f0f0f2;color:#6e6e73}
+.sectionHeading{margin:30px 2px 12px;font-size:11px;letter-spacing:.1em;color:var(--muted);font-weight:750}
+.allocation{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;background:#fff;border:1px solid rgba(60,60,67,.10);border-radius:22px;padding:18px 10px;box-shadow:0 2px 8px rgba(0,0,0,.018)}
+.allocationItem{display:flex;align-items:center;gap:12px;min-width:0;padding:8px 16px}.allocationItem+.allocationItem{border-left:1px solid var(--line)}
+.allocIcon{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;flex:none;font-size:19px}
+.houseIcon{background:#edf5ff;color:#007aff}.cashIcon{background:#eaf7ee;color:#248a3d}.investIcon{background:#f1edff;color:#7656c9}
+.allocInfo{flex:1;min-width:0}.allocName{font-size:12px;color:var(--muted);font-weight:550;min-height:0}.allocPct{font-size:22px;font-weight:700;letter-spacing:-.04em;color:var(--ink);margin:5px 0 9px;font-variant-numeric:tabular-nums}
+.allocBar,.bar{height:4px;border-radius:99px;background:#e9e9eb;overflow:hidden}.allocBar i,.bar i{display:block;height:100%;border-radius:99px;background:#007aff}.allocationItem:nth-child(2) .allocBar i{background:#34a853}.allocationItem:nth-child(3) .allocBar i{background:#8b78d6}
+.section,.marketCard,.accounts,.illiquid,.timelineBalance,.timelineChartCard,.timelineStat{background:#fff;border:1px solid rgba(60,60,67,.10);border-radius:22px;box-shadow:0 2px 8px rgba(0,0,0,.018)}
+.section,.marketCard,.accounts,.illiquid{padding:23px 24px;margin-top:16px}
+.sectionTitle{font-size:15px;font-weight:700;color:var(--ink);letter-spacing:-.02em;margin-bottom:16px}
+.marketRow{padding:13px 0}.marketRow+.marketRow{border-top:1px solid var(--line)}.marketName{font-size:13px;color:#3a3a3c}.marketValue{font-size:16px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}.marketDelta{font-size:11px;color:#248a3d;margin-top:4px}
+.marketIcon{width:34px;height:34px;border-radius:11px}.dollarIcon{background:#edf5ff;color:#007aff}.bitcoinIcon{background:#fff3e5;color:#b86b00}
+.account{padding:14px 0}.account+.account{border-top:1px solid rgba(60,60,67,.09)}.name{font-size:13px;font-weight:600;color:var(--ink)}.amt{font-size:14px;font-weight:650;color:var(--ink);font-variant-numeric:tabular-nums}.sub,.note{font-size:11px;color:var(--muted)}.account .bar{margin-top:9px;height:4px}.illiquid{background:linear-gradient(145deg,#fff,#fcfbff);border-color:rgba(139,120,214,.18)}.illiquid .sectionTitle{color:#7656c9}.illiquid .note{background:#f6f3ff;color:#6853a6;border-radius:12px;padding:12px 14px;font-size:11px}
+.bottom{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(330px,calc(100% - 32px));padding:6px;background:rgba(250,250,252,.82);border:1px solid rgba(60,60,67,.16);border-radius:23px;box-shadow:0 10px 35px rgba(0,0,0,.14);backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);display:grid;grid-template-columns:repeat(2,1fr);gap:5px;z-index:20}
+.nav{appearance:none;border:0;background:transparent;border-radius:17px;color:#6e6e73;font-size:11px;font-weight:600;padding:7px 5px;min-height:57px;cursor:pointer;transition:background-color .18s ease,color .18s ease}.nav.active{color:#0066cc;background:#e6f2ff}.nav .nicon{width:27px;height:27px;margin:0 auto 3px;display:grid;place-items:center;color:currentColor}.nav .nicon svg{width:23px;height:23px}
+.timelinePage{padding-top:0}.timelineHeader{margin-bottom:22px}.timelineEyebrow{font-size:11px;letter-spacing:.12em;font-weight:700;color:var(--muted);margin-bottom:7px}.timelineBalance{padding:28px 30px;margin-bottom:16px}.timelineBalanceLabel,.timelineStatLabel{font-size:12px;color:var(--muted)}.timelineAmount{font-size:clamp(52px,7vw,78px);font-weight:730;letter-spacing:-.075em;line-height:1.05;color:var(--ink);font-variant-numeric:tabular-nums;margin:12px 0}.timelineChartCard{padding:24px}.timelineChartTitle{font-size:16px;font-weight:700;color:var(--ink)}.timelineChartSub{font-size:12px;color:var(--muted);margin-top:5px}.historyMonth .monthFill{background:#dce9f8}.historyMonth .monthFill.active,.historyMonth.selected .monthFill{background:linear-gradient(180deg,#007aff,#78baff)!important;box-shadow:0 4px 12px rgba(0,122,255,.15)}.historyMonth.selected .monthValue,.historyMonth.selected .monthLabel{color:#007aff}.timelineHint{font-size:11px;color:var(--muted)}.timelineStats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px}.timelineStat{padding:20px}.timelineStatValue{font-size:24px;font-weight:700;letter-spacing:-.04em;color:var(--ink);margin-top:9px;font-variant-numeric:tabular-nums}
+.skeleton{animation:appleShimmer 1.4s ease-in-out infinite;background:linear-gradient(90deg,#ececf0 25%,#f7f7f9 50%,#ececf0 75%);background-size:200% 100%;border-radius:7px}@keyframes appleShimmer{to{background-position:-200% 0}}
+button:focus-visible,.nav:focus-visible{outline:3px solid rgba(0,122,255,.45);outline-offset:3px}
+@media(min-width:900px){.app{padding-top:46px}.hero{padding-top:34px}.water{height:190px}.cards{gap:18px}.card{padding:25px 28px}.sectionGrid{gap:16px}}
+@media(max-width:700px){.app{width:calc(100% - 32px);padding:25px 0 125px}.welcomeTitle,.timelineHeading{font-size:28px}.hero{padding:23px 20px 0;border-radius:25px}.heroValue{font-size:clamp(46px,12vw,64px)}.water{height:140px;margin-left:-20px;margin-right:-20px}.waterCaption{left:20px;bottom:13px}.cards{gap:10px;margin-top:12px}.card{padding:17px 15px;border-radius:18px}.value{font-size:clamp(19px,5vw,24px)}.allocation{grid-template-columns:1fr;padding:7px 16px}.allocationItem{padding:13px 2px}.allocationItem+.allocationItem{border-left:0;border-top:1px solid var(--line)}.allocPct{font-size:21px}.section,.marketCard,.accounts,.illiquid{padding:19px;margin-top:12px;border-radius:19px}.timelineBalance{padding:23px 20px}.timelineAmount{font-size:clamp(46px,12vw,64px)}.timelineChartCard{padding:19px}.timelineStats{gap:10px}.timelineStat{padding:16px}}
+@media(max-width:380px){.app{width:calc(100% - 24px)}.cards{grid-template-columns:1fr}.card{padding:16px 18px}.heroValue{font-size:44px}.bottom{width:calc(100% - 24px)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
 </style>
 
 <link rel="icon" type="image/png" sizes="180x180" href="./icons/icon-180.png">
@@ -237,7 +286,7 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"SF Pro D
   <section class="hero">
     <div class="eyebrow">LIQUID NET WORTH</div>
     <div class="heroValue skeleton" id="liquidNW" aria-label="Loading"></div>
-    <div class="delta">↑ 2.45% <span>vs last month</span></div>
+    <div class="growthPill flat" id="overviewGrowth">Calculating monthly change…</div>
     <div class="water">
       <svg viewBox="0 0 1200 220" preserveAspectRatio="none" aria-hidden="true">
         <defs>
@@ -438,6 +487,30 @@ async function getMainSheetData(){
     (Array.isArray(payload.rows) ? payload.rows : null)));
 }
 
+async function updateOverviewGrowth(currentLiquid){
+  const el=document.getElementById('overviewGrowth');
+  if(!el) return;
+  try{
+    const history=await getTimelineData();
+    const now=new Date();
+    const sameMonth=history.length && history.at(-1).date.getFullYear()===now.getFullYear()
+      && history.at(-1).date.getMonth()===now.getMonth();
+    const previous=sameMonth ? history.at(-2) : history.at(-1);
+    if(!previous || !isFinite(previous.total) || previous.total<=0){
+      el.textContent='No previous month data';
+      el.className='growthPill flat';
+      return;
+    }
+    const pct=((currentLiquid-previous.total)/previous.total)*100;
+    el.textContent=`${pct>=0?'↑':'↓'} ${Math.abs(pct).toFixed(2)}% vs last month`;
+    el.className=`growthPill ${pct>0?'up':pct<0?'down':'flat'}`;
+  }catch(error){
+    console.warn('Overview monthly growth unavailable:',error);
+    el.textContent='Monthly change unavailable';
+    el.className='growthPill flat';
+  }
+}
+
 async function refreshOverview(){
   const rows=await getMainSheetData();
   if(!rows || rows.length<10) throw new Error('Unexpected main sheet response');
@@ -478,6 +551,7 @@ async function refreshOverview(){
   const set=(id,n)=>{const el=document.getElementById(id); if(el && isFinite(n)){el.textContent=money(n);el.classList.remove('skeleton')}};
 
   set('liquidNW',liquid);
+  updateOverviewGrowth(liquid);
   set('accessibleNW',accessible);
   set('totalNW',total);
   set('dollarBlue',dollar);
