@@ -270,6 +270,18 @@ button:focus-visible,.nav:focus-visible{outline:3px solid rgba(0,122,255,.45);ou
 @media(max-width:380px){.app{width:calc(100% - 24px)}.cards{grid-template-columns:1fr}.card{padding:16px 18px}.heroValue{font-size:44px}.bottom{width:calc(100% - 24px)}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 
+
+/* Final mobile navigation and monthly change loading refinements */
+#overviewGrowth.growthPill.skeleton{display:block;width:172px;height:30px;margin-top:11px;padding:0;border-radius:999px!important;color:transparent!important;background:linear-gradient(90deg,#eceff3 25%,#f8fafc 50%,#eceff3 75%)!important;background-size:200% 100%!important;animation:skeletonShimmer 1.35s ease-in-out infinite!important}
+.bottom{height:76px!important;min-height:76px!important;width:min(340px,calc(100% - 36px))!important;padding:6px!important;display:grid!important;grid-template-columns:1fr 1fr!important;align-items:stretch!important;gap:6px!important;bottom:calc(12px + env(safe-area-inset-bottom))!important;z-index:1000!important}
+.bottom .nav{height:62px!important;min-height:62px!important;max-height:none!important;width:100%!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:4px!important;padding:5px 8px!important;border-radius:17px!important;line-height:1.15!important;font-size:12px!important;font-weight:650!important;white-space:nowrap!important;color:#626b78!important;overflow:visible!important}
+.bottom .nav .nicon{display:flex!important;align-items:center!important;justify-content:center!important;width:25px!important;height:25px!important;margin:0!important;color:currentColor!important;flex:none!important}
+.bottom .nav .nicon svg{display:block!important;width:24px!important;height:24px!important;stroke:currentColor!important}
+.bottom .nav.active{background:#e8f2ff!important;color:#0866cf!important}
+.bottom .nav:not(.active){background:transparent!important;color:#687383!important}
+.app{padding-bottom:170px!important}
+@media(max-width:380px){.bottom{width:calc(100% - 28px)!important}.bottom .nav{font-size:11px!important}}
+
 </style>
 
 <link rel="icon" type="image/png" sizes="180x180" href="./icons/icon-180.png">
@@ -286,7 +298,7 @@ button:focus-visible,.nav:focus-visible{outline:3px solid rgba(0,122,255,.45);ou
   <section class="hero">
     <div class="eyebrow">LIQUID NET WORTH</div>
     <div class="heroValue skeleton" id="liquidNW" aria-label="Loading"></div>
-    <div class="growthPill flat" id="overviewGrowth">Calculating monthly change…</div>
+    <div class="growthPill flat skeleton" id="overviewGrowth" aria-label="Loading monthly change"></div>
     <div class="water">
       <svg viewBox="0 0 1200 220" preserveAspectRatio="none" aria-hidden="true">
         <defs>
