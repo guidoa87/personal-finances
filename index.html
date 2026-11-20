@@ -262,7 +262,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
 .account{padding:14px 0}.account+.account{border-top:1px solid rgba(60,60,67,.09)}.name{font-size:13px;font-weight:600;color:var(--ink)}.amt{font-size:14px;font-weight:650;color:var(--ink);font-variant-numeric:tabular-nums}.sub,.note{font-size:11px;color:var(--muted)}.account .bar{margin-top:9px;height:4px}.illiquid{background:linear-gradient(145deg,#fff,#fcfbff);border-color:rgba(139,120,214,.18)}.illiquid .sectionTitle{color:#7656c9}.illiquid .note{background:#f6f3ff;color:#6853a6;border-radius:12px;padding:12px 14px;font-size:11px}
 .bottom{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(330px,calc(100% - 32px));padding:6px;background:rgba(250,250,252,.82);border:1px solid rgba(60,60,67,.16);border-radius:23px;box-shadow:0 10px 35px rgba(0,0,0,.14);backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);display:grid;grid-template-columns:repeat(2,1fr);gap:5px;z-index:20}
 .nav{appearance:none;border:0;background:transparent;border-radius:17px;color:#6e6e73;font-size:11px;font-weight:600;padding:7px 5px;min-height:57px;cursor:pointer;transition:background-color .18s ease,color .18s ease}.nav.active{color:#0066cc;background:#e6f2ff}.nav .nicon{width:27px;height:27px;margin:0 auto 3px;display:grid;place-items:center;color:currentColor}.nav .nicon svg{width:23px;height:23px}
-.timelinePage{padding-top:0}.timelineHeader{margin-bottom:22px}.timelineEyebrow{font-size:11px;letter-spacing:.12em;font-weight:700;color:var(--muted);margin-bottom:7px}.timelineBalance{padding:28px 30px;margin-bottom:16px}.timelineBalanceLabel,.timelineStatLabel{font-size:12px;color:var(--muted)}.timelineAmount{font-size:clamp(52px,7vw,78px);font-weight:730;letter-spacing:-.075em;line-height:1.05;color:var(--ink);font-variant-numeric:tabular-nums;margin:12px 0}.timelineChartCard{padding:24px}.timelineChartTitle{font-size:16px;font-weight:700;color:var(--ink)}.timelineChartSub{font-size:12px;color:var(--muted);margin-top:5px}.historyMonth .monthFill{background:#dce9f8}.historyMonth .monthFill.active,.historyMonth.selected .monthFill{background:linear-gradient(180deg,#007aff,#78baff)!important;box-shadow:0 4px 12px rgba(0,122,255,.15)}.historyMonth.selected .monthValue,.historyMonth.selected .monthLabel{color:#007aff}.timelineHint{font-size:11px;color:var(--muted)}.timelineStats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px}.timelineStat{padding:20px}.timelineStatValue{font-size:24px;font-weight:700;letter-spacing:-.04em;color:var(--ink);margin-top:9px;font-variant-numeric:tabular-nums}
+.timelinePage{padding-top:0}.timelineHeader{margin-bottom:22px}.timelineEyebrow{font-size:11px;letter-spacing:.12em;font-weight:700;color:var(--muted);margin-bottom:7px}.timelineBalance{padding:28px 30px;margin-bottom:16px}.timelineBalanceLabel,.timelineStatLabel{font-size:12px;color:var(--muted)}.timelineAmount{font-size:clamp(52px,7vw,78px);font-weight:730;letter-spacing:-.075em;line-height:1.05;color:var(--ink);font-variant-numeric:tabular-nums;margin:12px 0}.timelineChartCard{padding:24px}.timelineChartTitle{font-size:16px;font-weight:700;color:var(--ink)}.timelineChartSub{font-size:12px;color:var(--muted);margin-top:5px}.historyMonth .monthFill{background:#dce9f8}.historyMonth .monthFill.active,.historyMonth.selected .monthFill{background:linear-gradient(180deg,#0756b8,#003f91)!important;box-shadow:0 5px 14px rgba(0,63,145,.24)}.historyMonth.selected .monthValue,.historyMonth.selected .monthLabel{color:#064b9e}.timelineHint{font-size:11px;color:var(--muted)}.timelineStats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px}.timelineStat{padding:20px}.timelineStatValue{font-size:24px;font-weight:700;letter-spacing:-.04em;color:var(--ink);margin-top:9px;font-variant-numeric:tabular-nums}
 .skeleton{animation:appleShimmer 1.4s ease-in-out infinite;background:linear-gradient(90deg,#ececf0 25%,#f7f7f9 50%,#ececf0 75%);background-size:200% 100%;border-radius:7px}@keyframes appleShimmer{to{background-position:-200% 0}}
 button:focus-visible,.nav:focus-visible{outline:3px solid rgba(0,122,255,.45);outline-offset:3px}
 @media(min-width:900px){.app{padding-top:46px}.hero{padding-top:34px}.water{height:190px}.cards{gap:18px}.card{padding:25px 28px}.sectionGrid{gap:16px}}
@@ -505,9 +505,13 @@ async function updateOverviewGrowth(currentLiquid){
   try{
     const history=await getTimelineData();
     const now=new Date();
-    const sameMonth=history.length && history.at(-1).date.getFullYear()===now.getFullYear()
-      && history.at(-1).date.getMonth()===now.getMonth();
-    const previous=sameMonth ? history.at(-2) : history.at(-1);
+    const monthStart=new Date(now.getFullYear(),now.getMonth(),1);
+    // Compare only against the latest historical point strictly before this month.
+    // Ignore future planning rows that may exist in the Race to 500k sheet.
+    const previous=history
+      .filter(point=>point.date<monthStart)
+      .sort((a,b)=>a.date-b.date)
+      .at(-1);
     if(!previous || !isFinite(previous.total) || previous.total<=0){
       el.textContent='No previous month data';
       el.className='growthPill flat';
@@ -833,19 +837,16 @@ async function renderTimeline(){
   </div>`;
 
   try{
-    const data=await getTimelineData();
-    // Use the live Liquid NW from the main sheet for the current month, rather
-    // than the month-opening snapshot stored in the historical timeline.
-    const liveTotal=await getCurrentLiquidNW();
+    const rawHistory=await getTimelineData();
+    // Exclude future forecast rows. Both Overview and Timeline compare the live
+    // month against the latest completed historical month.
     const now=new Date();
     const monthStart=new Date(now.getFullYear(),now.getMonth(),1);
-    const latest=data.at(-1);
-    if(latest && latest.date.getFullYear()===now.getFullYear() && latest.date.getMonth()===now.getMonth()){
-      latest.total=liveTotal;
-      latest.date=now;
-    }else{
-      data.push({date:now,total:liveTotal});
-    }
+    const data=rawHistory
+      .filter(point=>point.date<monthStart)
+      .sort((a,b)=>a.date-b.date);
+    const liveTotal=await getCurrentLiquidNW();
+    data.push({date:now,total:liveTotal});
     const latestIndex=data.length-1;
     const latestPoint=data[latestIndex];
     const previous=data[latestIndex-1];
